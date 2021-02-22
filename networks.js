@@ -2,6 +2,7 @@ const path = require("path");
 require("dotenv").config({path: "./.env"});
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 const AccountIndex = 0;
+
 module.exports = {
   networks: {
     development: {
@@ -14,7 +15,7 @@ module.exports = {
     },
     rinkeby: {
       provider: function() {
-        return new HDWalletProvider(process.env.MNEMONIC, "https://rinkeby.infura.io/v3/98d49364a6d6475e842e7a63341ca0bf", AccountIndex)
+        return new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA_LINK, AccountIndex)
       },
       networkId: 4
     }
