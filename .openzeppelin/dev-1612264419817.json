@@ -1,0 +1,14 @@
+{
+  "contracts": {},
+  "solidityLibs": {},
+  "proxies": {
+    "eventsDapp-update/OpenEvents": [
+      {
+        "address": "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab",
+        "kind": "NonProxy",
+        "bytecodeHash": "4ff1e004b9710c6662b8c7c95dc3db7f1bfc646a8a164a1f8a214a50d84b3442"
+      }
+    ]
+  },
+  "manifestVersion": "2.2"
+}

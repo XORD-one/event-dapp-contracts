@@ -1,0 +1,14 @@
+{
+  "contracts": {},
+  "solidityLibs": {},
+  "proxies": {
+    "eventsDapp-update/DaoEvents": [
+      {
+        "address": "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab",
+        "kind": "NonProxy",
+        "bytecodeHash": "7488ead7b0730fa7fd246ca8484e79d0e8252ab8674f20b9dfb6d979707d3a84"
+      }
+    ]
+  },
+  "manifestVersion": "2.2"
+}
