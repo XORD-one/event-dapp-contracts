@@ -18,6 +18,12 @@ module.exports = {
         return new HDWalletProvider(process.env.MNEMONIC, process.env.INFURA_LINK, AccountIndex)
       },
       networkId: 4
+    },
+    maticT: {
+      provider: function() {
+        return new HDWalletProvider(process.env.MNEMONIC, process.env.MATIC_LINK, AccountIndex)
+      },
+      networkId: 80001
     }
   },
 };
