@@ -28,17 +28,17 @@ describe("DaoEventsV2", async () => {
 
     it("creates an event", async () => {
       await daoEventsV2.connect(user).createEvent([
-        user.address,
-        "testing name",
-        "topic name",
-        "location coordinates",
-        "ipfs hash",
         false, // unlimited
         false, // oneTimeBuy
+        user.address,
         await toTimeFrmCurTime(24),
         "86400",
         "0",
         "0",
+        "testing name",
+        "topic name",
+        "location coordinates",
+        "ipfs hash",
         ["level1", "level2"],
         [toWei("1"), toWei("2")],
       ]);
@@ -51,17 +51,17 @@ describe("DaoEventsV2", async () => {
     it("creates another event", async () => {
       await expect(
         daoEventsV2.connect(accounts[0]).createEvent([
-          accounts[0].address,
-          "testing name 2",
-          "topic name 2",
-          "location coordinates",
-          "ipfs hash",
           true, // limited
           true, // oneTimeBuy
+          accounts[0].address,
           await toTimeFrmCurTime(48),
           "86400",
           "100",
           "0",
+          "testing name 2",
+          "topic name 2",
+          "location coordinates",
+          "ipfs hash",
           ["level1", "level2"],
           [toWei("1"), toWei("2")],
         ])
@@ -140,17 +140,17 @@ describe("DaoEventsV2", async () => {
 
     it("create an event with limited quantity", async () => {
       await daoEventsV2.connect(user).createEvent([
-        user.address,
-        "testing name 2",
-        "topic name 2",
-        "location coordinates",
-        "ipfs hash",
         true, // limited
         false, // oneTimeBuy
+        user.address,
         await toTimeFrmCurTime(48),
         "86400",
         "2",
         "0",
+        "testing name 2",
+        "topic name 2",
+        "location coordinates",
+        "ipfs hash",
         ["level1", "level2"],
         [toWei("1"), toWei("2")],
       ]);

@@ -18,17 +18,17 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
     address tokenAddress;
 
     struct Event {
-        address owner;
-        string name;
-        string topic;
-        string location;
-        string ipfsHash;
         bool limited;
         bool oneTimeBuy;
+        address owner;
         uint256 time;
         uint256 duration;
         uint256 totalQuantity;
         uint256 quantitySold;
+        string name;
+        string topic;
+        string location;
+        string ipfsHash;
         string[] categories;
         uint256[] prices;
     }
