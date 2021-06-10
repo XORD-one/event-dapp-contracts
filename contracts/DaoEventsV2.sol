@@ -77,17 +77,6 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
         tokenAddress = _token;
     }
 
-    // address owner;
-    // string name;
-    // string topic;
-    // string location;
-    // string ipfsHash;
-    // bool limited;
-    // uint256 time;
-    // uint256 duration;
-    // uint256 totalQuantity;
-    // uint256 quantitySold;
-
     function createEvent(Event memory _event) public goodTime(_event.time) {
         require(_event.owner == msg.sender, "Caller must be the owner");
         require(_event.quantitySold == 0, "Quantity sold must be zero");
