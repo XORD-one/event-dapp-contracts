@@ -134,7 +134,7 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
 
         if (_event.limited)
             require(
-                _event.totalQuantity >= _event.quantitySold,
+                _event.totalQuantity > _event.quantitySold,
                 "ticket quantity exceeded"
             );
         if (_event.oneTimeBuy) {
@@ -165,6 +165,8 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
         // mint ticketId
         _safeMint(msg.sender, _ticketId);
 
+        uint256 _quantitySold = events[_eventId].quantitySold;
+
         emit SoldTicket(
             msg.sender,
             _eventId,
@@ -172,7 +174,7 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
             _boughtLocation,
             _price,
             block.timestamp,
-            _event.quantitySold,
+            _quantitySold,
             _category
         );
 

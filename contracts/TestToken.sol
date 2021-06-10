@@ -10,7 +10,7 @@ contract TestToken is ERC20 {
     constructor() ERC20("TEST", "TST") {}
 
     function faucet(address _account, uint256 _amount) public {
-        console.log("send %s tokens to %s", _amount, _account);
+        // console.log("send %s tokens to %s", _amount, _account);
         _mint(_account, _amount);
     }
 }
