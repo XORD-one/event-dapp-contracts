@@ -137,10 +137,8 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
         // transfer the tokens to event owner
         IERC20(tokenAddress).safeTransferFrom(msg.sender, _event.owner, _price);
 
-        unchecked {
-            eventRevenue[_eventId] = eventRevenue[_eventId] + _price;
-            events[_eventId].quantitySold = events[_eventId].quantitySold + 1;
-        }
+        eventRevenue[_eventId] = eventRevenue[_eventId] + _price;
+        events[_eventId].quantitySold = events[_eventId].quantitySold + 1;
 
         tickets.push(
             Ticket({
