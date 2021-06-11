@@ -1,21 +1,18 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./EventTicketV2.sol";
-
-// import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v4.1/contracts/access/Ownable.sol";
-// import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v4.1/contracts/token/ERC20/IERC20.sol";
-// import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v4.1/contracts/token/ERC20/utils/SafeERC20.sol";
-
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "./EventTicketV2.sol";
+import "./IOracle.sol";
 
 contract DaoEventsV2 is Ownable, EventTicketV2 {
     using SafeERC20 for IERC20;
 
     uint256 public eventIds;
-    address tokenAddress;
+    address public tokenAddress;
+    IOracle public oracle;
 
     struct Event {
         bool limited;
@@ -55,8 +52,10 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
         string category
     );
 
-    constructor(address _token) {
+    constructor(address _token, address _oracle) {
         tokenAddress = _token;
+
+        oracle = IOracle(_oracle);
 
         // start eventId and ticketId from 1
         eventIds++;

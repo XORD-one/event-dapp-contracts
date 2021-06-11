@@ -54,7 +54,7 @@ module.exports = {
         `0x${process.env.PRIVATE_KEY_1}`,
         `0x${process.env.PRIVATE_KEY_2}`,
       ],
-      from: `0x${process.env.PRIVATE_KEY_1}`,
+      // from: `0x${process.env.PRIVATE_KEY_1}`,
       chainId: 4,
     },
     goerli: {
@@ -63,7 +63,7 @@ module.exports = {
         `0x${process.env.PRIVATE_KEY_1}`,
         `0x${process.env.PRIVATE_KEY_2}`,
       ],
-      from: `0x${process.env.PRIVATE_KEY_1}`,
+      // from: `0x${process.env.PRIVATE_KEY_1}`,
       chainId: 5,
     },
 
