@@ -21,14 +21,28 @@ task("accounts", "Prints the list of accounts", async () => {
 
 module.exports = {
   solidity: {
-    version: "0.8.4",
-    settings: {
-      // https://hardhat.org/hardhat-network/#solidity-optimizer-support
-      optimizer: {
-        enabled: true,
-        runs: 200,
+    compilers: [
+      {
+        version: "0.8.4",
+        settings: {
+          // https://hardhat.org/hardhat-network/#solidity-optimizer-support
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
       },
-    },
+      {
+        version: "0.7.5",
+        settings: {
+          // https://hardhat.org/hardhat-network/#solidity-optimizer-support
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+    ],
   },
   networks: {
     // hardhat: {

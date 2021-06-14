@@ -12,23 +12,25 @@ async function main() {
 
   const Oracle = await ethers.getContractFactory("Oracle");
   const oracle = await Oracle.deploy();
-  createJson("carbonToken", oracle);
   // console.log(oracle);
   console.log(`Oracle address: ${oracle.address}`);
+  // https://rinkeby.etherscan.io/address/0x570c60deb26Ec72F74f2c917f767070F0b27f674#code
 
-  function createJson(name, contract) {
-    let addressObj = {};
-    addressObj[chainId] = contract.address;
-    // console.log(addressObj);
+  /*
+  const TestToken = await ethers.getContractFactory("TestToken");
+  const testToken = await TestToken.deploy();
+  // console.log(testToken);
+  console.log(`TestToken address: ${testToken.address}`);
+  */
 
-    fs.writeFileSync(
-      `abis/${name}.json`,
-      JSON.stringify({
-        address: addressObj,
-        abi: JSON.parse(contract.interface.format("json")),
-      })
-    );
-  }
+  const DaoEventsV2 = await ethers.getContractFactory("DaoEventsV2");
+  const daoEventsV2 = await DaoEventsV2.deploy(
+    "0xfe1b6ABc39E46cEc54d275efB4b29B33be176c2A", // phnx
+    oracle.address
+  );
+  // console.log(daoEventsV2);
+  console.log(`DaoEventsV2 address: ${daoEventsV2.address}`);
+  // https://rinkeby.etherscan.io/address/0x20F9bD13a6B173D1925c4D79529bb5930F9F155D#code
 }
 
 main()

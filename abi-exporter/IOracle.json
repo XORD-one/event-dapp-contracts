@@ -5,11 +5,6 @@
         "internalType": "address",
         "name": "token",
         "type": "address"
-      },
-      {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
       }
     ],
     "name": "fetch",
@@ -25,7 +20,7 @@
   },
   {
     "inputs": [],
-    "name": "fetchAquaPrice",
+    "name": "fetchPhnxPrice",
     "outputs": [
       {
         "internalType": "uint256",

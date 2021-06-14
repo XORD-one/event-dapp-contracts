@@ -2,9 +2,7 @@
 pragma solidity ^0.8.0;
 
 interface IOracle {
-    function fetch(address token, bytes calldata data)
-        external
-        returns (uint256 price);
+    function fetch(address token) external returns (uint256 price);
 
-    function fetchAquaPrice() external returns (uint256 price);
+    function fetchPhnxPrice() external returns (uint256 price);
 }

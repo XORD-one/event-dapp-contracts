@@ -2,17 +2,22 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./EventTicketV2.sol";
 import "./IOracle.sol";
 
-contract DaoEventsV2 is Ownable, EventTicketV2 {
-    using SafeERC20 for IERC20;
+interface IERC20 {
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) external returns (bool);
+}
 
+contract DaoEventsV2 is Ownable, EventTicketV2 {
     uint256 public eventIds;
     address public tokenAddress;
     IOracle public oracle;
+    address public USDT = 0xD9BA894E0097f8cC2BBc9D24D308b98e36dc6D02; // rinkeby
 
     struct Event {
         bool limited;
@@ -117,7 +122,9 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
     ) public eventExist(_eventId) goodTime(events[_eventId].time) {
         Event memory _event = events[_eventId];
         string memory _category = _event.categories[_categoryIndex];
-        uint256 _price = _event.prices[_categoryIndex];
+        uint256 _usdtPrice = _event.prices[_categoryIndex];
+        uint256 _phnxPerUsdt = oracle.fetch(USDT);
+        uint256 _price = _usdtPrice * _phnxPerUsdt;
         uint256 _ticketId = ticketIds;
 
         if (_event.limited)
@@ -134,7 +141,10 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
         }
 
         // transfer the tokens to event owner
-        IERC20(tokenAddress).safeTransferFrom(msg.sender, _event.owner, _price);
+        require(
+            IERC20(tokenAddress).transferFrom(msg.sender, _event.owner, _price),
+            "tokens not transferred"
+        );
 
         eventRevenue[_eventId] = eventRevenue[_eventId] + _price;
         events[_eventId].quantitySold = events[_eventId].quantitySold + 1;
