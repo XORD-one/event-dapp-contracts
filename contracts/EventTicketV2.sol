@@ -17,13 +17,12 @@ contract EventTicketV2 is ERC721URIStorage {
 
     constructor() ERC721("PhoenixDAO Ticket", "DDD") {}
 
-    function getTicket(uint256 _id) public view returns (uint256, uint256) {
+    function getTicket(uint256 _id) public view returns (Ticket memory _ticket) {
         require(
             _id != 0 && _id <= tickets.length,
             "DaoEvents:getTicket: Invalid ID"
         );
-        Ticket memory _ticket = tickets[_id - 1];
-        return (_ticket.eventId, _ticket.seatNo);
+        return tickets[_id - 1];
     }
 
     function ticketsOf(address owner) external view returns (uint256[] memory) {

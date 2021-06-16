@@ -146,14 +146,31 @@
     "name": "getTicket",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "eventId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "seatNo",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "boughtLocation",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "eventLocation",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct EventTicketV2.Ticket",
+        "name": "_ticket",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",

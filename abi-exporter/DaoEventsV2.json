@@ -84,11 +84,6 @@
         "components": [
           {
             "internalType": "bool",
-            "name": "limited",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
             "name": "oneTimeBuy",
             "type": "bool"
           },
@@ -114,7 +109,7 @@
           },
           {
             "internalType": "uint256",
-            "name": "quantitySold",
+            "name": "totalQntySold",
             "type": "uint256"
           },
           {
@@ -138,14 +133,29 @@
             "type": "string"
           },
           {
-            "internalType": "string[]",
-            "name": "categories",
-            "type": "string[]"
+            "internalType": "bool[]",
+            "name": "ticketLimited",
+            "type": "bool[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "tktQnty",
+            "type": "uint256[]"
           },
           {
             "internalType": "uint256[]",
             "name": "prices",
             "type": "uint256[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "tktQntySold",
+            "type": "uint256[]"
+          },
+          {
+            "internalType": "string[]",
+            "name": "categories",
+            "type": "string[]"
           }
         ],
         "indexed": false,
@@ -180,58 +190,80 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "buyer",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "eventId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "ticketId",
-        "type": "uint256"
-      },
-      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "eventId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "seatNo",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "boughtLocation",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "eventLocation",
+            "type": "string"
+          }
+        ],
         "indexed": false,
-        "internalType": "string",
-        "name": "boughtLocation",
-        "type": "string"
+        "internalType": "struct EventTicketV2.Ticket",
+        "name": "",
+        "type": "tuple"
       },
       {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "buyer",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "usdtPrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "phnxPrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "boughtTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalTktsSold",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "categoryTktsSold",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "boughtLocation",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "category",
+            "type": "string"
+          }
+        ],
         "indexed": false,
-        "internalType": "uint256",
-        "name": "usdtPrice",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "phnxPrice",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "boughtTime",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "ticketsSold",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "category",
-        "type": "string"
+        "internalType": "struct DaoEventsV2.SoldTicketStruct",
+        "name": "",
+        "type": "tuple"
       }
     ],
     "name": "SoldTicket",
@@ -354,11 +386,6 @@
         "components": [
           {
             "internalType": "bool",
-            "name": "limited",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
             "name": "oneTimeBuy",
             "type": "bool"
           },
@@ -384,7 +411,7 @@
           },
           {
             "internalType": "uint256",
-            "name": "quantitySold",
+            "name": "totalQntySold",
             "type": "uint256"
           },
           {
@@ -408,14 +435,29 @@
             "type": "string"
           },
           {
-            "internalType": "string[]",
-            "name": "categories",
-            "type": "string[]"
+            "internalType": "bool[]",
+            "name": "ticketLimited",
+            "type": "bool[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "tktQnty",
+            "type": "uint256[]"
           },
           {
             "internalType": "uint256[]",
             "name": "prices",
             "type": "uint256[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "tktQntySold",
+            "type": "uint256[]"
+          },
+          {
+            "internalType": "string[]",
+            "name": "categories",
+            "type": "string[]"
           }
         ],
         "internalType": "struct DaoEventsV2.Event",
@@ -472,11 +514,6 @@
     "outputs": [
       {
         "internalType": "bool",
-        "name": "limited",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
         "name": "oneTimeBuy",
         "type": "bool"
       },
@@ -502,7 +539,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "quantitySold",
+        "name": "totalQntySold",
         "type": "uint256"
       },
       {
@@ -591,14 +628,31 @@
     "name": "getTicket",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "eventId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "seatNo",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "boughtLocation",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "eventLocation",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct EventTicketV2.Ticket",
+        "name": "_ticket",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",

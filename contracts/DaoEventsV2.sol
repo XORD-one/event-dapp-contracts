@@ -14,25 +14,39 @@ interface IERC20 {
 }
 
 contract DaoEventsV2 is Ownable, EventTicketV2 {
+    uint256 private eventId;
     uint256 public eventIds;
     address public tokenAddress;
     IOracle public oracle;
     address public USDT = 0xD9BA894E0097f8cC2BBc9D24D308b98e36dc6D02; // rinkeby
 
     struct Event {
-        bool limited;
         bool oneTimeBuy;
         address owner;
         uint256 time;
         uint256 duration;
         uint256 totalQuantity;
-        uint256 quantitySold;
+        uint256 totalQntySold;
         string name;
         string topic;
         string location;
         string ipfsHash;
-        string[] categories;
+        bool[] ticketLimited;
+        uint256[] tktQnty;
         uint256[] prices;
+        uint256[] tktQntySold;
+        string[] categories;
+    }
+
+    struct SoldTicketStruct {
+        address buyer;
+        uint256 usdtPrice;
+        uint256 phnxPrice;
+        uint256 boughtTime;
+        uint256 totalTktsSold;
+        uint256 categoryTktsSold;
+        string boughtLocation;
+        string category;
     }
 
     // Mapping from owner to list of owned events IDs.
@@ -46,17 +60,7 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
 
     event CreatedEvent(address indexed owner, uint256 eventId, Event);
 
-    event SoldTicket(
-        address indexed buyer,
-        uint256 indexed eventId,
-        uint256 indexed ticketId,
-        string boughtLocation,
-        uint256 usdtPrice,
-        uint256 phnxPrice,
-        uint256 boughtTime,
-        uint256 ticketsSold,
-        string category
-    );
+    event SoldTicket(Ticket, SoldTicketStruct);
 
     constructor(address _token, address _oracle) {
         tokenAddress = _token;
@@ -82,16 +86,37 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
         eventIds++;
 
         require(_event.owner == msg.sender, "Caller must be the owner");
-        require(_event.quantitySold == 0, "Quantity sold must be zero");
+        require(_event.totalQntySold == 0, "Quantity sold must be zero");
         require(
-            _event.categories.length == _event.prices.length,
-            "Invalid categories or prices"
+            _event.categories.length == _event.tktQnty.length &&
+                _event.categories.length == _event.prices.length &&
+                _event.categories.length == _event.tktQntySold.length,
+            "Invalid categories"
         );
-        if (!_event.limited)
+
+        uint256 _totalTktQnty;
+        uint256 _categoriesLength = _event.categories.length;
+        for (uint256 i = 0; i < _categoriesLength; i++) {
             require(
-                _event.totalQuantity == 0,
-                "quantity should be zero for unlimited tickets"
+                _event.tktQntySold[i] == 0,
+                "Category quantity sold must be zero"
             );
+
+            _totalTktQnty = _totalTktQnty + _event.tktQnty[i];
+
+            if (!_event.ticketLimited[i]) {
+                require(
+                    _event.tktQnty[i] == 0,
+                    "quantity should be zero for unlimited tickets"
+                );
+            }
+        }
+
+        require(
+            _event.totalQuantity == _totalTktQnty,
+            "Total ticket quantity not match category quantity"
+        );
+
         address _msgSender = msg.sender;
         uint256 _eventId = eventIds;
 
@@ -116,39 +141,46 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
         uint256 _categoryIndex,
         string memory _boughtLocation
     ) public eventExist(_eventId) goodTime(events[_eventId].time) {
+        eventId = _eventId;
         // increment ticketId
         ticketIds++;
 
         address _msgSender = msg.sender;
-        Event memory _event = events[_eventId];
+        Event memory _event = events[eventId];
         string memory _category = _event.categories[_categoryIndex];
         uint256 _usdtPrice = _event.prices[_categoryIndex];
         uint256 _phnxPerUsdt = oracle.fetch(USDT);
         uint256 _phnxPrice = (_usdtPrice * _phnxPerUsdt) / 1e18;
         uint256 _ticketId = ticketIds;
 
-        if (_event.limited)
+        if (_event.ticketLimited[_categoryIndex]) {
             require(
-                _event.totalQuantity > _event.quantitySold,
+                _event.totalQuantity > _event.totalQntySold &&
+                    _event.tktQnty[_categoryIndex] > _event.totalQntySold,
                 "ticket quantity exceeded"
             );
+        }
+
         if (_event.oneTimeBuy) {
             require(
-                !ticketBought[_msgSender][_eventId],
+                !ticketBought[_msgSender][eventId],
                 "ticket to be bought only one time"
             );
-            ticketBought[_msgSender][_eventId] = true;
+            ticketBought[_msgSender][eventId] = true;
         }
 
         // transfer the tokens to event owner
         IERC20(tokenAddress).transferFrom(_msgSender, _event.owner, _phnxPrice);
 
-        eventRevenue[_eventId] = eventRevenue[_eventId] + _phnxPrice;
-        events[_eventId].quantitySold = events[_eventId].quantitySold + 1;
+        eventRevenue[eventId] = eventRevenue[eventId] + _phnxPrice;
+        events[eventId].totalQntySold = events[eventId].totalQntySold + 1;
+        events[eventId].tktQntySold[_categoryIndex] =
+            events[eventId].tktQntySold[_categoryIndex] +
+            1;
 
         tickets.push(
             Ticket({
-                eventId: _eventId,
+                eventId: eventId,
                 seatNo: _ticketId,
                 boughtLocation: _boughtLocation,
                 eventLocation: _event.location
@@ -158,18 +190,21 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
         // mint ticketId
         _safeMint(_msgSender, _ticketId);
 
-        uint256 _quantitySold = events[_eventId].quantitySold;
+        uint256 _totalQuantitySold = events[eventId].totalQntySold;
+        uint256 _categoryTktsSold = events[eventId].tktQntySold[_categoryIndex];
 
         emit SoldTicket(
-            _msgSender,
-            _eventId,
-            _ticketId,
-            _boughtLocation,
-            _usdtPrice,
-            _phnxPrice,
-            block.timestamp,
-            _quantitySold,
-            _category
+            Ticket(eventId, _ticketId, _boughtLocation, _event.location),
+            SoldTicketStruct(
+                _msgSender,
+                _usdtPrice,
+                _phnxPrice,
+                block.timestamp,
+                _totalQuantitySold,
+                _categoryTktsSold,
+                _boughtLocation,
+                _category
+            )
         );
     }
 }
