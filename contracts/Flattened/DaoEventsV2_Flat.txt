@@ -1359,13 +1359,12 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
         uint256 indexed eventId,
         uint256 indexed ticketId,
         string boughtLocation,
-        uint256 price,
+        uint256 usdtPrice,
+        uint256 phnxPrice,
         uint256 boughtTime,
         uint256 ticketsSold,
         string category
     );
-
-    event Price(uint256 price);
 
     constructor(address _token, address _oracle) {
         tokenAddress = _token;
@@ -1432,11 +1431,8 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
         Event memory _event = events[_eventId];
         string memory _category = _event.categories[_categoryIndex];
         uint256 _usdtPrice = _event.prices[_categoryIndex];
-        emit Price(_usdtPrice);
         uint256 _phnxPerUsdt = oracle.fetch(USDT);
-        emit Price(_phnxPerUsdt);
-        uint256 _price = (_usdtPrice * _phnxPerUsdt) / 1e18;
-        emit Price(_price);
+        uint256 _phnxPrice = (_usdtPrice * _phnxPerUsdt) / 1e18;
         uint256 _ticketId = ticketIds;
 
         if (_event.limited)
@@ -1453,12 +1449,9 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
         }
 
         // transfer the tokens to event owner
-        require(
-            IERC20(tokenAddress).transferFrom(_msgSender, _event.owner, _price),
-            "tokens not transferred"
-        );
+        IERC20(tokenAddress).transferFrom(_msgSender, _event.owner, _phnxPrice);
 
-        eventRevenue[_eventId] = eventRevenue[_eventId] + _price;
+        eventRevenue[_eventId] = eventRevenue[_eventId] + _phnxPrice;
         events[_eventId].quantitySold = events[_eventId].quantitySold + 1;
 
         tickets.push(
@@ -1480,7 +1473,8 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
             _eventId,
             _ticketId,
             _boughtLocation,
-            _price,
+            _usdtPrice,
+            _phnxPrice,
             block.timestamp,
             _quantitySold,
             _category

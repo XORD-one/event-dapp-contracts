@@ -180,19 +180,6 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "price",
-        "type": "uint256"
-      }
-    ],
-    "name": "Price",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
         "indexed": true,
         "internalType": "address",
         "name": "buyer",
@@ -219,7 +206,13 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "price",
+        "name": "usdtPrice",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "phnxPrice",
         "type": "uint256"
       },
       {

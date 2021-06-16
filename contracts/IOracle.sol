@@ -1,8 +1,8 @@
-// // SPDX-License-Identifier: MIT
-// pragma solidity ^0.8.0;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
-// interface IOracle {
-//     function fetch(address token) external returns (uint256 price);
+interface IOracle {
+    function fetch(address token) external returns (uint256 price);
 
-//     function fetchPhnxPrice() external returns (uint256 price);
-// }
+    function fetchPhnxPrice() external returns (uint256 price);
+}
