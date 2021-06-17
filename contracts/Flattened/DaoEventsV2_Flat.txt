@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
 
 // File: @openzeppelin/contracts/utils/Context.sol
 pragma solidity ^0.8.0;
@@ -96,13 +95,6 @@ abstract contract Ownable is Context {
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;
     }
-}
-
-// File: contracts/IOracle.sol
-interface IOracle {
-    function fetch(address token) external returns (uint256 price);
-
-    function fetchPhnxPrice() external returns (uint256 price);
 }
 
 // File: @openzeppelin/contracts/utils/introspection/IERC165.sol
@@ -483,6 +475,32 @@ library Address {
     }
 }
 
+// File: @openzeppelin/contracts/token/ERC721/IERC721Receiver.sol
+pragma solidity ^0.8.0;
+
+/**
+ * @title ERC721 token receiver interface
+ * @dev Interface for any contract that wants to support safeTransfers
+ * from ERC721 asset contracts.
+ */
+interface IERC721Receiver {
+    /**
+     * @dev Whenever an {IERC721} `tokenId` token is transferred to this contract via {IERC721-safeTransferFrom}
+     * by `operator` from `from`, this function is called.
+     *
+     * It must return its Solidity selector to confirm the token transfer.
+     * If any other value is returned or the interface is not implemented by the recipient, the transfer will be reverted.
+     *
+     * The selector can be obtained in Solidity with `IERC721.onERC721Received.selector`.
+     */
+    function onERC721Received(
+        address operator,
+        address from,
+        uint256 tokenId,
+        bytes calldata data
+    ) external returns (bytes4);
+}
+
 // File: @openzeppelin/contracts/token/ERC721/IERC721.sol
 pragma solidity ^0.8.0;
 
@@ -663,32 +681,6 @@ interface IERC721Metadata is IERC721 {
      * @dev Returns the Uniform Resource Identifier (URI) for `tokenId` token.
      */
     function tokenURI(uint256 tokenId) external view returns (string memory);
-}
-
-// File: @openzeppelin/contracts/token/ERC721/IERC721Receiver.sol
-pragma solidity ^0.8.0;
-
-/**
- * @title ERC721 token receiver interface
- * @dev Interface for any contract that wants to support safeTransfers
- * from ERC721 asset contracts.
- */
-interface IERC721Receiver {
-    /**
-     * @dev Whenever an {IERC721} `tokenId` token is transferred to this contract via {IERC721-safeTransferFrom}
-     * by `operator` from `from`, this function is called.
-     *
-     * It must return its Solidity selector to confirm the token transfer.
-     * If any other value is returned or the interface is not implemented by the recipient, the transfer will be reverted.
-     *
-     * The selector can be obtained in Solidity with `IERC721.onERC721Received.selector`.
-     */
-    function onERC721Received(
-        address operator,
-        address from,
-        uint256 tokenId,
-        bytes calldata data
-    ) external returns (bytes4);
 }
 
 // File: @openzeppelin/contracts/token/ERC721/ERC721.sol
@@ -1260,24 +1252,33 @@ abstract contract ERC721URIStorage is ERC721 {
     }
 }
 
-// File: contracts/EventTicketV2.sol
+// File: contracts/IEventTicketV2.sol
 pragma solidity ^0.8.0;
 
-contract EventTicketV2 is ERC721URIStorage {
+interface IEventTicketV2 {
     struct Ticket {
         uint256 eventId;
         uint256 seatNo;
         string boughtLocation;
         string eventLocation;
     }
+}
 
+// File: contracts/EventTicketV2.sol
+pragma solidity ^0.8.0;
+
+contract EventTicketV2 is IEventTicketV2, ERC721URIStorage {
     Ticket[] internal tickets;
 
     uint256 public ticketIds;
 
     constructor() ERC721("PhoenixDAO Ticket", "DDD") {}
 
-    function getTicket(uint256 _id) public view returns (Ticket memory _ticket) {
+    function getTicket(uint256 _id)
+        public
+        view
+        returns (Ticket memory _ticket)
+    {
         require(
             _id != 0 && _id <= tickets.length,
             "DaoEvents:getTicket: Invalid ID"
@@ -1309,6 +1310,68 @@ contract EventTicketV2 is ERC721URIStorage {
     }
 }
 
+// File: contracts/IOracle.sol
+pragma solidity ^0.8.0;
+
+interface IOracle {
+    function fetch(address token) external returns (uint256 price);
+
+    function fetchPhnxPrice() external returns (uint256 price);
+}
+
+// File: contracts/IDaoEventsV2.sol
+pragma solidity ^0.8.0;
+
+interface IDaoEventsV2 is IEventTicketV2 {
+    struct Event {
+        bool oneTimeBuy;
+        address owner;
+        uint256 time;
+        uint256 duration;
+        uint256 totalQuantity;
+        uint256 totalQntySold;
+        string name;
+        string topic;
+        string location;
+        string ipfsHash;
+        bool[] ticketLimited;
+        uint256[] tktQnty;
+        uint256[] prices;
+        uint256[] tktQntySold;
+        string[] categories;
+    }
+
+    struct SoldTicketStruct {
+        address buyer;
+        uint256 usdtPrice;
+        uint256 phnxPrice;
+        uint256 boughtTime;
+        uint256 totalTktsSold;
+        uint256 categoryTktsSold;
+        string category;
+    }
+
+    struct BuyTicket {
+        uint256 eventId;
+        uint256 categoryIndex;
+        string boughtLocation;
+    }
+
+    event CreatedEvent(address indexed owner, uint256 eventId, Event);
+
+    event SoldTicket(Ticket, SoldTicketStruct);
+
+    function eventsOf(address _owner) external view returns (uint256[] memory);
+
+    function getEventsCount() external view returns (uint256);
+
+    function changeToken(address _token) external;
+
+    function createEvent(Event memory _event) external;
+
+    function buyTicket(BuyTicket memory _buyTicket) external;
+}
+
 // File: contracts/DaoEventsV2.sol
 pragma solidity ^0.8.0;
 
@@ -1320,27 +1383,11 @@ interface IERC20 {
     ) external returns (bool);
 }
 
-contract DaoEventsV2 is Ownable, EventTicketV2 {
+contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2 {
     uint256 public eventIds;
     address public tokenAddress;
     IOracle public oracle;
     address public USDT = 0xD9BA894E0097f8cC2BBc9D24D308b98e36dc6D02; // rinkeby
-
-    struct Event {
-        bool limited;
-        bool oneTimeBuy;
-        address owner;
-        uint256 time;
-        uint256 duration;
-        uint256 totalQuantity;
-        uint256 quantitySold;
-        string name;
-        string topic;
-        string location;
-        string ipfsHash;
-        string[] categories;
-        uint256[] prices;
-    }
 
     // Mapping from owner to list of owned events IDs.
     mapping(address => uint256[]) private ownedEvents;
@@ -1350,20 +1397,6 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
     mapping(uint256 => Event) public events;
     // Mapping from address to eventId to boughOrNot
     mapping(address => mapping(uint256 => bool)) ticketBought;
-
-    event CreatedEvent(address indexed owner, uint256 eventId, Event);
-
-    event SoldTicket(
-        address indexed buyer,
-        uint256 indexed eventId,
-        uint256 indexed ticketId,
-        string boughtLocation,
-        uint256 usdtPrice,
-        uint256 phnxPrice,
-        uint256 boughtTime,
-        uint256 ticketsSold,
-        string category
-    );
 
     constructor(address _token, address _oracle) {
         tokenAddress = _token;
@@ -1380,103 +1413,162 @@ contract DaoEventsV2 is Ownable, EventTicketV2 {
         _;
     }
 
-    function changeToken(address _token) public onlyOwner() {
+    function changeToken(address _token) public override onlyOwner() {
         tokenAddress = _token;
     }
 
-    function createEvent(Event memory _event) public goodTime(_event.time) {
+    function createEvent(Event memory _event)
+        public
+        override
+        goodTime(_event.time)
+    {
         // increment the eventId
         eventIds++;
 
-        require(_event.owner == msg.sender, "Caller must be the owner");
-        require(_event.quantitySold == 0, "Quantity sold must be zero");
+        require(_event.owner == _msgSender(), "Caller must be the owner");
+        require(_event.totalQntySold == 0, "Quantity sold must be zero");
         require(
-            _event.categories.length == _event.prices.length,
-            "Invalid categories or prices"
+            _event.categories.length == _event.tktQnty.length &&
+                _event.categories.length == _event.prices.length &&
+                _event.categories.length == _event.tktQntySold.length,
+            "Invalid categories"
         );
-        if (!_event.limited)
+
+        uint256 _totalTktQnty;
+        uint256 _categoriesLength = _event.categories.length;
+        for (uint256 i = 0; i < _categoriesLength; i++) {
             require(
-                _event.totalQuantity == 0,
-                "quantity should be zero for unlimited tickets"
+                _event.tktQntySold[i] == 0,
+                "Category quantity sold must be zero"
             );
-        address _msgSender = msg.sender;
+
+            _totalTktQnty = _totalTktQnty + _event.tktQnty[i];
+
+            if (!_event.ticketLimited[i]) {
+                require(
+                    _event.tktQnty[i] == 0,
+                    "quantity should be zero for unlimited tickets"
+                );
+            }
+        }
+
+        require(
+            _event.totalQuantity == _totalTktQnty,
+            "Total ticket quantity not match category quantity"
+        );
+
         uint256 _eventId = eventIds;
 
         // updating state
         events[_eventId] = _event;
-        ownedEvents[_msgSender].push(_eventId);
+        ownedEvents[_msgSender()].push(_eventId);
 
         // emiting event
-        emit CreatedEvent(_msgSender, _eventId, _event);
+        emit CreatedEvent(_msgSender(), _eventId, _event);
     }
 
-    function eventsOf(address _owner) public view returns (uint256[] memory) {
-        return ownedEvents[_owner];
-    }
-
-    function getEventsCount() public view returns (uint256) {
-        return eventIds;
-    }
-
-    function buyTicket(
-        uint256 _eventId,
-        uint256 _categoryIndex,
-        string memory _boughtLocation
-    ) public eventExist(_eventId) goodTime(events[_eventId].time) {
+    function buyTicket(BuyTicket memory _buyTicket)
+        public
+        override
+        eventExist(_buyTicket.eventId)
+        goodTime(events[_buyTicket.eventId].time)
+    {
         // increment ticketId
         ticketIds++;
 
-        address _msgSender = msg.sender;
-        Event memory _event = events[_eventId];
-        string memory _category = _event.categories[_categoryIndex];
-        uint256 _usdtPrice = _event.prices[_categoryIndex];
-        uint256 _phnxPerUsdt = oracle.fetch(USDT);
-        uint256 _phnxPrice = (_usdtPrice * _phnxPerUsdt) / 1e18;
+        Event memory _event = events[_buyTicket.eventId];
+        uint256 _usdtPrice = _event.prices[_buyTicket.categoryIndex];
+        uint256 _phnxPrice = (_usdtPrice * oracle.fetch(USDT)) / 1e18;
         uint256 _ticketId = ticketIds;
 
-        if (_event.limited)
+        if (_event.ticketLimited[_buyTicket.categoryIndex]) {
             require(
-                _event.totalQuantity > _event.quantitySold,
+                _event.totalQuantity > _event.totalQntySold &&
+                    _event.tktQnty[_buyTicket.categoryIndex] >
+                    _event.totalQntySold,
                 "ticket quantity exceeded"
             );
-        if (_event.oneTimeBuy) {
-            require(
-                !ticketBought[_msgSender][_eventId],
-                "ticket to be bought only one time"
-            );
-            ticketBought[_msgSender][_eventId] = true;
         }
 
-        // transfer the tokens to event owner
-        IERC20(tokenAddress).transferFrom(_msgSender, _event.owner, _phnxPrice);
+        if (_event.oneTimeBuy) {
+            require(
+                !ticketBought[_msgSender()][_buyTicket.eventId],
+                "ticket to be bought only one time"
+            );
+            ticketBought[_msgSender()][_buyTicket.eventId] = true;
+        }
 
-        eventRevenue[_eventId] = eventRevenue[_eventId] + _phnxPrice;
-        events[_eventId].quantitySold = events[_eventId].quantitySold + 1;
+        _buyTicketInternal(_buyTicket, _event, _phnxPrice, _ticketId);
+
+        uint256 _totalQuantitySold = events[_buyTicket.eventId].totalQntySold;
+        uint256 _categoryTktsSold =
+            events[_buyTicket.eventId].tktQntySold[_buyTicket.categoryIndex];
+
+        emit SoldTicket(
+            Ticket(
+                _buyTicket.eventId,
+                _ticketId,
+                _buyTicket.boughtLocation,
+                _event.location
+            ),
+            SoldTicketStruct(
+                _msgSender(),
+                _usdtPrice,
+                _phnxPrice,
+                block.timestamp,
+                _totalQuantitySold,
+                _categoryTktsSold,
+                _event.categories[_buyTicket.categoryIndex]
+            )
+        );
+    }
+
+    function eventsOf(address _owner)
+        public
+        view
+        override
+        returns (uint256[] memory)
+    {
+        return ownedEvents[_owner];
+    }
+
+    function getEventsCount() public view override returns (uint256) {
+        return eventIds;
+    }
+
+    function _buyTicketInternal(
+        BuyTicket memory _buyTicket,
+        Event memory _event,
+        uint256 _phnxPrice,
+        uint256 _ticketId
+    ) internal {
+        eventRevenue[_buyTicket.eventId] =
+            eventRevenue[_buyTicket.eventId] +
+            _phnxPrice;
+        events[_buyTicket.eventId].totalQntySold =
+            events[_buyTicket.eventId].totalQntySold +
+            1;
+        events[_buyTicket.eventId].tktQntySold[_buyTicket.categoryIndex] =
+            events[_buyTicket.eventId].tktQntySold[_buyTicket.categoryIndex] +
+            1;
 
         tickets.push(
             Ticket({
-                eventId: _eventId,
+                eventId: _buyTicket.eventId,
                 seatNo: _ticketId,
-                boughtLocation: _boughtLocation,
+                boughtLocation: _buyTicket.boughtLocation,
                 eventLocation: _event.location
             })
         );
 
-        // mint ticketId
-        _safeMint(_msgSender, _ticketId);
-
-        uint256 _quantitySold = events[_eventId].quantitySold;
-
-        emit SoldTicket(
-            _msgSender,
-            _eventId,
-            _ticketId,
-            _boughtLocation,
-            _usdtPrice,
-            _phnxPrice,
-            block.timestamp,
-            _quantitySold,
-            _category
+        // transfer the tokens to event owner
+        IERC20(tokenAddress).transferFrom(
+            _msgSender(),
+            _event.owner,
+            _phnxPrice
         );
+
+        // mint ticketId
+        _safeMint(_msgSender(), _ticketId);
     }
 }
