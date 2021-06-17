@@ -28,10 +28,9 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2 {
     // Mapping from address to eventId to boughOrNot
     mapping(address => mapping(uint256 => bool)) ticketBought;
 
-    constructor(address _token) {
-        // , address _oracle
+    constructor(address _token, address _oracle) {
         tokenAddress = _token;
-        // oracle = IOracle(_oracle);
+        oracle = IOracle(_oracle);
     }
 
     modifier goodTime(uint256 _time) {
@@ -109,8 +108,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2 {
 
         Event memory _event = events[_buyTicket.eventId];
         uint256 _usdtPrice = _event.prices[_buyTicket.categoryIndex];
-        // uint256 _phnxPrice = (_usdtPrice * oracle.fetch(USDT)) / 1e18;
-        uint256 _phnxPrice = _usdtPrice / 1e18;
+        uint256 _phnxPrice = (_usdtPrice * oracle.fetch(USDT)) / 1e18;
         uint256 _ticketId = ticketIds;
 
         if (_event.ticketLimited[_buyTicket.categoryIndex]) {
