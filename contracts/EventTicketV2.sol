@@ -2,22 +2,20 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "./IEventTicketV2.sol";
 
-contract EventTicketV2 is ERC721URIStorage {
-    struct Ticket {
-        uint256 eventId;
-        uint256 seatNo;
-        string boughtLocation;
-        string eventLocation;
-    }
-
+contract EventTicketV2 is IEventTicketV2, ERC721URIStorage {
     Ticket[] internal tickets;
 
     uint256 public ticketIds;
 
     constructor() ERC721("PhoenixDAO Ticket", "DDD") {}
 
-    function getTicket(uint256 _id) public view returns (Ticket memory _ticket) {
+    function getTicket(uint256 _id)
+        public
+        view
+        returns (Ticket memory _ticket)
+    {
         require(
             _id != 0 && _id <= tickets.length,
             "DaoEvents:getTicket: Invalid ID"

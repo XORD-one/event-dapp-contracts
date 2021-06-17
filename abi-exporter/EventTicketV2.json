@@ -168,7 +168,7 @@
             "type": "string"
           }
         ],
-        "internalType": "struct EventTicketV2.Ticket",
+        "internalType": "struct IEventTicketV2.Ticket",
         "name": "_ticket",
         "type": "tuple"
       }

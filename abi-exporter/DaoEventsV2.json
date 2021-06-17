@@ -5,11 +5,6 @@
         "internalType": "address",
         "name": "_token",
         "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_oracle",
-        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -159,7 +154,7 @@
           }
         ],
         "indexed": false,
-        "internalType": "struct DaoEventsV2.Event",
+        "internalType": "struct IDaoEventsV2.Event",
         "name": "",
         "type": "tuple"
       }
@@ -213,7 +208,7 @@
           }
         ],
         "indexed": false,
-        "internalType": "struct EventTicketV2.Ticket",
+        "internalType": "struct IEventTicketV2.Ticket",
         "name": "",
         "type": "tuple"
       },
@@ -251,17 +246,12 @@
           },
           {
             "internalType": "string",
-            "name": "boughtLocation",
-            "type": "string"
-          },
-          {
-            "internalType": "string",
             "name": "category",
             "type": "string"
           }
         ],
         "indexed": false,
-        "internalType": "struct DaoEventsV2.SoldTicketStruct",
+        "internalType": "struct IDaoEventsV2.SoldTicketStruct",
         "name": "",
         "type": "tuple"
       }
@@ -347,19 +337,26 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "_eventId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_categoryIndex",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "_boughtLocation",
-        "type": "string"
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "eventId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "categoryIndex",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "boughtLocation",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct IDaoEventsV2.BuyTicket",
+        "name": "_buyTicket",
+        "type": "tuple"
       }
     ],
     "name": "buyTicket",
@@ -460,7 +457,7 @@
             "type": "string[]"
           }
         ],
-        "internalType": "struct DaoEventsV2.Event",
+        "internalType": "struct IDaoEventsV2.Event",
         "name": "_event",
         "type": "tuple"
       }
@@ -650,7 +647,7 @@
             "type": "string"
           }
         ],
-        "internalType": "struct EventTicketV2.Ticket",
+        "internalType": "struct IEventTicketV2.Ticket",
         "name": "_ticket",
         "type": "tuple"
       }
