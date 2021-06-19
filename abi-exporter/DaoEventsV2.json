@@ -216,7 +216,14 @@
         "internalType": "struct IEventTicketV2.Ticket",
         "name": "",
         "type": "tuple"
-      },
+      }
+    ],
+    "name": "SoldTicketDetails1",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
       {
         "components": [
           {
@@ -261,7 +268,7 @@
         "type": "tuple"
       }
     ],
-    "name": "SoldTicket",
+    "name": "SoldTicketDetails2",
     "type": "event"
   },
   {

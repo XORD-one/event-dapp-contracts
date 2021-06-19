@@ -8,4 +8,6 @@ interface IEventTicketV2 {
         string boughtLocation;
         string eventLocation;
     }
+
+    event SoldTicketDetails1(Ticket);
 }

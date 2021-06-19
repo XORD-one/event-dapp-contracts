@@ -134,13 +134,16 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2 {
         uint256 _categoryTktsSold =
             events[_buyTicket.eventId].tktQntySold[_buyTicket.categoryIndex];
 
-        emit SoldTicket(
+        emit SoldTicketDetails1(
             Ticket(
                 _buyTicket.eventId,
                 _ticketId,
                 _buyTicket.boughtLocation,
                 _event.location
-            ),
+            )
+        );
+
+        emit SoldTicketDetails2(
             SoldTicketStruct(
                 _msgSender(),
                 _usdtPrice,

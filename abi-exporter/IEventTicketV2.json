@@ -1,0 +1,37 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "eventId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "seatNo",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "boughtLocation",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "eventLocation",
+            "type": "string"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct IEventTicketV2.Ticket",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "name": "SoldTicketDetails1",
+    "type": "event"
+  }
+]
