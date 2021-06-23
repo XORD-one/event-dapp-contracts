@@ -24,6 +24,8 @@ interface IDaoEventsV2 is IEventTicketV2 {
     }
 
     struct SoldTicketStruct {
+        uint256 eventId;
+        uint256 seatNo;
         address buyer;
         uint256 usdtPrice;
         uint256 phnxPrice;

@@ -145,6 +145,8 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2 {
 
         emit SoldTicketDetails2(
             SoldTicketStruct(
+                _buyTicket.eventId,
+                _ticketId,
                 _msgSender(),
                 _usdtPrice,
                 _phnxPrice,
