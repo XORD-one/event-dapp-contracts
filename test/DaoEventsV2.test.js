@@ -115,7 +115,7 @@ describe("DaoEventsV2", async () => {
           ["0", "0"],
           ["level1", "level2"],
         ])
-      ).to.be.revertedWith(" Caller must be the owner");
+      ).to.be.revertedWith("Caller must be the owner");
     });
 
     it("lets accounts[1] buy ticket of event 1 more than one time", async () => {
@@ -127,23 +127,12 @@ describe("DaoEventsV2", async () => {
         .approve(daoEventsV2.address, toWei("10"));
 
       // level1
-      const receipt = await daoEventsV2
-        .connect(accounts[1])
-        .buyTicket(["1", "0", "pakistan"]);
-      const tx = await receipt.wait();
-      const soldTicketEvent = tx.events[3];
-      const timestamp = (
-        await soldTicketEvent.getBlock(
-          (await await soldTicketEvent.getTransaction(receipt.hash)).toString()
-        )
-      ).timestamp;
+      await expect(
+        daoEventsV2.connect(accounts[1]).buyTicket(["1", "0", "pakistan"])
+      )
+        .to.emit(daoEventsV2, "SoldTicketDetails1")
+        .emit(daoEventsV2, "SoldTicketDetails2");
 
-      await expect(receipt)
-        .to.emit(daoEventsV2, "SoldTicket")
-        .withArgs(
-          ["1", "1", "pakistan", "location coordinates"],
-          [accounts[1].address, toWei("1"), "1", timestamp, "1", "1", "level1"]
-        );
       expect(await daoEventsV2.ownerOf("1")).to.equal(accounts[1].address);
 
       // level1

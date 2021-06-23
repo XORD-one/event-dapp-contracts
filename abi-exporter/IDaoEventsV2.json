@@ -128,7 +128,7 @@
           }
         ],
         "indexed": false,
-        "internalType": "struct IEventTicketV2.Ticket",
+        "internalType": "struct IDaoEventsV2.Ticket",
         "name": "",
         "type": "tuple"
       }
@@ -141,6 +141,16 @@
     "inputs": [
       {
         "components": [
+          {
+            "internalType": "uint256",
+            "name": "eventId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "seatNo",
+            "type": "uint256"
+          },
           {
             "internalType": "address",
             "name": "buyer",
@@ -187,6 +197,7 @@
     "type": "event"
   },
   {
+    "constant": false,
     "inputs": [
       {
         "components": [
@@ -213,10 +224,12 @@
     ],
     "name": "buyTicket",
     "outputs": [],
+    "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
+    "constant": false,
     "inputs": [
       {
         "internalType": "address",
@@ -226,10 +239,12 @@
     ],
     "name": "changeToken",
     "outputs": [],
+    "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
+    "constant": false,
     "inputs": [
       {
         "components": [
@@ -316,10 +331,12 @@
     ],
     "name": "createEvent",
     "outputs": [],
+    "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
+    "constant": true,
     "inputs": [
       {
         "internalType": "address",
@@ -335,10 +352,12 @@
         "type": "uint256[]"
       }
     ],
+    "payable": false,
     "stateMutability": "view",
     "type": "function"
   },
   {
+    "constant": true,
     "inputs": [],
     "name": "getEventsCount",
     "outputs": [
@@ -348,6 +367,7 @@
         "type": "uint256"
       }
     ],
+    "payable": false,
     "stateMutability": "view",
     "type": "function"
   }

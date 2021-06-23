@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.5.17;
+pragma experimental ABIEncoderV2;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/ownership/Ownable.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./IDaoEventsV2.sol";
 import "./EventTicketV2.sol";
+
+import "hardhat/console.sol";
 
 interface IERC20 {
     function transferFrom(
@@ -13,7 +17,7 @@ interface IERC20 {
     ) external returns (bool);
 }
 
-contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2 {
+contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
     uint256 public eventIds;
     address public tokenAddress;
     IOracle public oracle;
@@ -28,7 +32,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2 {
     // Mapping from address to eventId to boughOrNot
     mapping(address => mapping(uint256 => bool)) ticketBought;
 
-    constructor(address _token, address _oracle) {
+    constructor(address _token, address _oracle) public {
         tokenAddress = _token;
         oracle = IOracle(_oracle);
     }
@@ -43,15 +47,11 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2 {
         _;
     }
 
-    function changeToken(address _token) public override onlyOwner() {
+    function changeToken(address _token) public onlyOwner() {
         tokenAddress = _token;
     }
 
-    function createEvent(Event memory _event)
-        public
-        override
-        goodTime(_event.time)
-    {
+    function createEvent(Event memory _event) public goodTime(_event.time) {
         // increment the eventId
         eventIds++;
 
@@ -99,7 +99,6 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2 {
 
     function buyTicket(BuyTicket memory _buyTicket)
         public
-        override
         eventExist(_buyTicket.eventId)
         goodTime(events[_buyTicket.eventId].time)
     {
@@ -158,16 +157,11 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2 {
         );
     }
 
-    function eventsOf(address _owner)
-        public
-        view
-        override
-        returns (uint256[] memory)
-    {
+    function eventsOf(address _owner) public view returns (uint256[] memory) {
         return ownedEvents[_owner];
     }
 
-    function getEventsCount() public view override returns (uint256) {
+    function getEventsCount() public view returns (uint256) {
         return eventIds;
     }
 
@@ -176,7 +170,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2 {
         Event memory _event,
         uint256 _phnxPrice,
         uint256 _ticketId
-    ) internal {
+    ) internal nonReentrant {
         eventRevenue[_buyTicket.eventId] =
             eventRevenue[_buyTicket.eventId] +
             _phnxPrice;
@@ -204,6 +198,6 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2 {
         );
 
         // mint ticketId
-        _safeMint(_msgSender(), _ticketId);
+        _mint(_msgSender(), _ticketId);
     }
 }
