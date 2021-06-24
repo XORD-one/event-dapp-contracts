@@ -5,11 +5,6 @@
         "internalType": "address",
         "name": "_token",
         "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_oracle",
-        "type": "address"
       }
     ],
     "payable": false,
@@ -86,6 +81,11 @@
           {
             "internalType": "bool",
             "name": "oneTimeBuy",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "token",
             "type": "bool"
           },
           {
@@ -436,6 +436,11 @@
             "type": "bool"
           },
           {
+            "internalType": "bool",
+            "name": "token",
+            "type": "bool"
+          },
+          {
             "internalType": "address",
             "name": "owner",
             "type": "address"
@@ -567,6 +572,11 @@
       {
         "internalType": "bool",
         "name": "oneTimeBuy",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "token",
         "type": "bool"
       },
       {

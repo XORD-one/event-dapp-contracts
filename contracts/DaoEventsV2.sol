@@ -32,9 +32,10 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
     // Mapping from address to eventId to boughOrNot
     mapping(address => mapping(uint256 => bool)) ticketBought;
 
-    constructor(address _token, address _oracle) public {
+    //, address _oracle
+    constructor(address _token) public {
         tokenAddress = _token;
-        oracle = IOracle(_oracle);
+        // oracle = IOracle(_oracle);
     }
 
     modifier goodTime(uint256 _time) {
@@ -106,8 +107,21 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         ticketIds++;
 
         Event memory _event = events[_buyTicket.eventId];
-        uint256 _usdtPrice = _event.prices[_buyTicket.categoryIndex];
-        uint256 _phnxPrice = (_usdtPrice * oracle.fetch(USDT)) / 1e18;
+
+        uint256 _usdtPrice;
+        uint256 _phnxPrice;
+
+        if (!_event.token) {
+            // event is free
+            _usdtPrice = 0;
+            _phnxPrice = 0;
+        } else {
+            // event is paid
+            _usdtPrice = _event.prices[_buyTicket.categoryIndex];
+            // _phnxPrice = (_usdtPrice * oracle.fetch(USDT)) / 1e18;
+            _phnxPrice = 1e18;
+        }
+
         uint256 _ticketId = ticketIds;
 
         if (_event.ticketLimited[_buyTicket.categoryIndex]) {
@@ -190,12 +204,15 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
             })
         );
 
-        // transfer the tokens to event owner
-        IERC20(tokenAddress).transferFrom(
-            _msgSender(),
-            _event.owner,
-            _phnxPrice
-        );
+        if (_event.token) {
+            // event is paid
+            // transfer the tokens to event owner
+            IERC20(tokenAddress).transferFrom(
+                _msgSender(),
+                _event.owner,
+                _phnxPrice
+            );
+        }
 
         // mint ticketId
         _mint(_msgSender(), _ticketId);

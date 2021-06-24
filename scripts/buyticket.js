@@ -32,6 +32,7 @@ async function main() {
   // // create event1
   // await daoeventsv2.connect(deployer).createEvent([
   //   false, // oneTimeBuy
+  //   true, // token -> event not free
   //   deployer.address,
   //   await toTimeFrmCurTime(24),
   //   "86400",
@@ -51,6 +52,7 @@ async function main() {
   // // create event2
   // await daoeventsv2.connect(deployer).createEvent([
   //   true, // oneTimeBuy
+  //   true, // token -> event not free
   //   deployer.address,
   //   await toTimeFrmCurTime(48),
   //   "86400",
@@ -65,6 +67,26 @@ async function main() {
   //   [toWei("1"), toWei("2")],
   //   ["0", "0"],
   //   ["level1", "level2"],
+  // ]);
+
+  // // create event2
+  // await daoeventsv2.connect(deployer).createEvent([
+  //   true, // oneTimeBuy
+  //   false, // token -> event free
+  //   deployer.address,
+  //   await toTimeFrmCurTime(36),
+  //   "86400",
+  //   "60",
+  //   "0",
+  //   "testing name 3",
+  //   "topic name 3",
+  //   "location coordinates 3",
+  //   "ipfs hash 3",
+  //   [true], // limited
+  //   ["50"], // limited
+  //   ["0"],
+  //   ["0"],
+  //   [""],
   // ]);
 
   // // approve all phnx tokens to daoeventsv2 contract

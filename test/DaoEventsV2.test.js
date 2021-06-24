@@ -15,7 +15,7 @@ describe("DaoEventsV2", async () => {
     daoEventsV2 = await DaoEventsV2.deploy(testToken.address);
   });
 
-  describe("DaoEventsV2 Deployment", async () => {
+  describe("Tests", async () => {
     it("has a name", async () => {
       const name = await daoEventsV2.name();
       expect(name).to.equal("PhoenixDAO Ticket");
@@ -29,6 +29,7 @@ describe("DaoEventsV2", async () => {
     it("creates an event", async () => {
       await daoEventsV2.connect(user).createEvent([
         false, // oneTimeBuy
+        true, // token -> event not free
         user.address,
         await toTimeFrmCurTime(24),
         "86400",
@@ -54,6 +55,7 @@ describe("DaoEventsV2", async () => {
       await expect(
         daoEventsV2.connect(accounts[0]).createEvent([
           true, // oneTimeBuy
+          true, // token -> event not free
           accounts[0].address,
           await toTimeFrmCurTime(24),
           "86400",
@@ -80,6 +82,7 @@ describe("DaoEventsV2", async () => {
       await expect(
         daoEventsV2.connect(accounts[0]).createEvent([
           true, // oneTimeBuy
+          true, // token -> event not free
           accounts[0].address,
           await toTimeFrmCurTime(24),
           "86400",
@@ -100,6 +103,7 @@ describe("DaoEventsV2", async () => {
       await expect(
         daoEventsV2.connect(accounts[0]).createEvent([
           true, // oneTimeBuy
+          true, // token -> event not free
           user.address,
           await toTimeFrmCurTime(24),
           "86400",
@@ -170,17 +174,18 @@ describe("DaoEventsV2", async () => {
     it("create an event with limited quantity", async () => {
       await daoEventsV2.connect(user).createEvent([
         false, // oneTimeBuy
+        true, // token -> event not free
         user.address,
         await toTimeFrmCurTime(24),
         "86400",
-        "60",
+        "11",
         "0",
         "testing name 2",
         "topic name ",
         "location coordinates 2",
         "ipfs hash 2",
         [true, true], // limited
-        ["50", "10"], // limited
+        ["1", "10"], // limited
         [toWei("1"), toWei("2")],
         ["0", "0"],
         ["level1", "level2"],
@@ -189,7 +194,7 @@ describe("DaoEventsV2", async () => {
       expect((await daoEventsV2.eventsOf(user.address)).toString()).to.equal(
         "1,3"
       );
-      expect((await daoEventsV2.events("3")).totalQuantity).to.equal("60");
+      expect((await daoEventsV2.events("3")).totalQuantity).to.equal("11");
 
       await testToken
         .connect(accounts[2])
@@ -209,9 +214,39 @@ describe("DaoEventsV2", async () => {
       expect((await daoEventsV2.events("3")).totalQntySold).to.equal("2");
 
       // should fail
-      expect(
+      await expect(
         daoEventsV2.connect(accounts[2]).buyTicket(["3", "0", "pakistan"])
       ).to.be.revertedWith("ticket quantity exceeded");
+    });
+
+    it("creates a free event", async () => {
+      await daoEventsV2.connect(user).createEvent([
+        false, // oneTimeBuy
+        false, // token -> event is free
+        user.address,
+        await toTimeFrmCurTime(24),
+        "86400",
+        "20",
+        "0",
+        "testing name free",
+        "topic name free",
+        "location coordinates free",
+        "ipfs hash free",
+        [true], // limited
+        ["20"], // limited
+        ["0"],
+        ["0"],
+        ["free ticket"],
+      ]);
+
+      expect((await daoEventsV2.eventsOf(user.address)).toString()).to.equal(
+        "1,3,4"
+      );
+    });
+
+    it("accounts[2] gets free ticket", async () => {
+      await daoEventsV2.connect(accounts[2]).buyTicket(["4", "0", "free khi"]);
+      expect(await daoEventsV2.ownerOf("7")).to.equal(accounts[2].address);
     });
   });
 });
