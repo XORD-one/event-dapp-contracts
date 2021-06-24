@@ -32,10 +32,9 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
     // Mapping from address to eventId to boughOrNot
     mapping(address => mapping(uint256 => bool)) ticketBought;
 
-    //, address _oracle
-    constructor(address _token) public {
+    constructor(address _token, address _oracle) public {
         tokenAddress = _token;
-        // oracle = IOracle(_oracle);
+        oracle = IOracle(_oracle);
     }
 
     modifier goodTime(uint256 _time) {
@@ -118,8 +117,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         } else {
             // event is paid
             _usdtPrice = _event.prices[_buyTicket.categoryIndex];
-            // _phnxPrice = (_usdtPrice * oracle.fetch(USDT)) / 1e18;
-            _phnxPrice = 1e18;
+            _phnxPrice = (_usdtPrice * oracle.fetch(USDT)) / 1e18;
         }
 
         uint256 _ticketId = ticketIds;
@@ -158,6 +156,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
 
         emit SoldTicketDetails2(
             SoldTicketStruct(
+                _event.token,
                 _buyTicket.eventId,
                 _ticketId,
                 _msgSender(),

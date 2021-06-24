@@ -147,6 +147,11 @@
       {
         "components": [
           {
+            "internalType": "bool",
+            "name": "token",
+            "type": "bool"
+          },
+          {
             "internalType": "uint256",
             "name": "eventId",
             "type": "uint256"

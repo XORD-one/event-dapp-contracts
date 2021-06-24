@@ -34,6 +34,7 @@ interface IDaoEventsV2 {
     }
 
     struct SoldTicketStruct {
+        bool token;
         uint256 eventId;
         uint256 seatNo;
         address buyer;

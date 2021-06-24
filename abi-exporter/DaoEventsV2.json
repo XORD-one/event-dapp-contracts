@@ -5,6 +5,11 @@
         "internalType": "address",
         "name": "_token",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_oracle",
+        "type": "address"
       }
     ],
     "payable": false,
@@ -227,6 +232,11 @@
     "inputs": [
       {
         "components": [
+          {
+            "internalType": "bool",
+            "name": "token",
+            "type": "bool"
+          },
           {
             "internalType": "uint256",
             "name": "eventId",

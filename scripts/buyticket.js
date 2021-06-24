@@ -14,7 +14,7 @@ async function main() {
 
   const PHNX = "0xfe1b6ABc39E46cEc54d275efB4b29B33be176c2A";
   const ORACLE = "0x570c60deb26Ec72F74f2c917f767070F0b27f674";
-  const DAO_EVENTS_V2 = "0xB7Ed29467BD619c89577Ea8b3CE6Da9ae83d3bbA";
+  const DAO_EVENTS_V2 = "0x7291f72f8E2B29D2c56f2F5B811487587701dC8b";
 
   const phnx = await ethers.getContractAt("PhoenixDAO", PHNX);
   const daoeventsv2 = await ethers.getContractAt("DaoEventsV2", DAO_EVENTS_V2);
@@ -76,28 +76,30 @@ async function main() {
   //   deployer.address,
   //   await toTimeFrmCurTime(36),
   //   "86400",
-  //   "60",
+  //   "10",
   //   "0",
   //   "testing name 3",
   //   "topic name 3",
   //   "location coordinates 3",
   //   "ipfs hash 3",
   //   [true], // limited
-  //   ["50"], // limited
+  //   ["10"], // limited
   //   ["0"],
   //   ["0"],
   //   [""],
   // ]);
 
-  // // approve all phnx tokens to daoeventsv2 contract
-  // await phnx
+  // approve all phnx tokens to daoeventsv2 contract
+  // const tx = await phnx
   //   .connect(user)
   //   .approve(daoeventsv2.address, await phnx.balanceOf(user.address));
-  // // ethers.constants.MaxUint256
+  // ethers.constants.MaxUint256
 
   // buy ticket from event1
-  // await daoeventsv2.connect(user).buyTicket(["1", "0", "xord1"]);
-  await daoeventsv2.connect(user).buyTicket(["1", "1", "xord2"]);
+  // const tx = await daoeventsv2.connect(user).buyTicket(["1", "0", "xord1"]);
+  // const tx = await daoeventsv2.connect(user).buyTicket(["1", "1", "xord2"]);
+  // const tx = await daoeventsv2.connect(user).buyTicket(["3", "0", "xord3"]);
+  console.log(tx);
 }
 
 main()

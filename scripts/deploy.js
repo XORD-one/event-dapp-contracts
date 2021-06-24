@@ -26,7 +26,7 @@ async function main() {
   console.log(`DaoEventsV2 address: ${daoEventsV2.address}`);
 
   // oracle -> https://rinkeby.etherscan.io/address/0x570c60deb26Ec72F74f2c917f767070F0b27f674#code
-  // daoeventsv2 -> https://rinkeby.etherscan.io/address/0xB7Ed29467BD619c89577Ea8b3CE6Da9ae83d3bbA#code
+  // daoeventsv2 -> https://rinkeby.etherscan.io/address/0x7291f72f8E2B29D2c56f2F5B811487587701dC8b#code
 }
 
 main()
