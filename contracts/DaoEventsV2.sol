@@ -166,7 +166,8 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
                 _totalQuantitySold,
                 _categoryTktsSold,
                 _event.categories[_buyTicket.categoryIndex]
-            )
+            ),
+            _event.owner
         );
     }
 

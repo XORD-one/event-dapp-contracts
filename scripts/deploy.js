@@ -26,7 +26,9 @@ async function main() {
   console.log(`DaoEventsV2 address: ${daoEventsV2.address}`);
 
   // oracle -> https://rinkeby.etherscan.io/address/0x570c60deb26Ec72F74f2c917f767070F0b27f674#code
-  // daoeventsv2 -> https://rinkeby.etherscan.io/address/0x7291f72f8E2B29D2c56f2F5B811487587701dC8b#code
+  // daoeventsv2 -> https://rinkeby.etherscan.io/address/0xe88c67E2B51CE139439D552D37154F918054de56#code
+
+  // 0.5.17 with no event owner event: https://rinkeby.etherscan.io/address/0x7291f72f8E2B29D2c56f2F5B811487587701dC8b#code
 }
 
 main()

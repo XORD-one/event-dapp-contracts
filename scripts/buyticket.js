@@ -14,7 +14,7 @@ async function main() {
 
   const PHNX = "0xfe1b6ABc39E46cEc54d275efB4b29B33be176c2A";
   const ORACLE = "0x570c60deb26Ec72F74f2c917f767070F0b27f674";
-  const DAO_EVENTS_V2 = "0x7291f72f8E2B29D2c56f2F5B811487587701dC8b";
+  const DAO_EVENTS_V2 = "0xe88c67E2B51CE139439D552D37154F918054de56";
 
   const phnx = await ethers.getContractAt("PhoenixDAO", PHNX);
   const daoeventsv2 = await ethers.getContractAt("DaoEventsV2", DAO_EVENTS_V2);
@@ -49,25 +49,25 @@ async function main() {
   //   ["level1", "level2"],
   // ]);
 
-  // // create event2
-  // await daoeventsv2.connect(deployer).createEvent([
-  //   true, // oneTimeBuy
-  //   true, // token -> event not free
-  //   deployer.address,
-  //   await toTimeFrmCurTime(48),
-  //   "86400",
-  //   "60",
-  //   "0",
-  //   "testing name 2",
-  //   "topic name ",
-  //   "location coordinates 2",
-  //   "ipfs hash 2",
-  //   [true, true], // limited
-  //   ["50", "10"], // limited
-  //   [toWei("1"), toWei("2")],
-  //   ["0", "0"],
-  //   ["level1", "level2"],
-  // ]);
+  // create event2
+  await daoeventsv2.connect(deployer).createEvent([
+    true, // oneTimeBuy
+    true, // token -> event not free
+    deployer.address,
+    await toTimeFrmCurTime(48),
+    "86400",
+    "60",
+    "0",
+    "testing name 2",
+    "topic name ",
+    "location coordinates 2",
+    "ipfs hash 2",
+    [true, true], // limited
+    ["50", "10"], // limited
+    [toWei("1"), toWei("2")],
+    ["0", "0"],
+    ["level1", "level2"],
+  ]);
 
   // // create event2
   // await daoeventsv2.connect(deployer).createEvent([
@@ -99,7 +99,7 @@ async function main() {
   // const tx = await daoeventsv2.connect(user).buyTicket(["1", "0", "xord1"]);
   // const tx = await daoeventsv2.connect(user).buyTicket(["1", "1", "xord2"]);
   // const tx = await daoeventsv2.connect(user).buyTicket(["3", "0", "xord3"]);
-  console.log(tx);
+  // console.log(tx);
 }
 
 main()

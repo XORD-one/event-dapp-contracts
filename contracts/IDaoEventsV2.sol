@@ -54,7 +54,7 @@ interface IDaoEventsV2 {
 
     event CreatedEvent(address indexed owner, uint256 eventId, Event);
 
-    event SoldTicketDetails2(SoldTicketStruct);
+    event SoldTicketDetails2(SoldTicketStruct, address owner);
 
     function eventsOf(address _owner) external view returns (uint256[] memory);
 

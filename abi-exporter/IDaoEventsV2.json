@@ -201,6 +201,12 @@
         "internalType": "struct IDaoEventsV2.SoldTicketStruct",
         "name": "",
         "type": "tuple"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
       }
     ],
     "name": "SoldTicketDetails2",
