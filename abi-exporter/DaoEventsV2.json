@@ -94,6 +94,11 @@
             "type": "bool"
           },
           {
+            "internalType": "bool",
+            "name": "onsite",
+            "type": "bool"
+          },
+          {
             "internalType": "address",
             "name": "owner",
             "type": "address"
@@ -101,11 +106,6 @@
           {
             "internalType": "uint256",
             "name": "time",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "duration",
             "type": "uint256"
           },
           {
@@ -457,6 +457,11 @@
             "type": "bool"
           },
           {
+            "internalType": "bool",
+            "name": "onsite",
+            "type": "bool"
+          },
+          {
             "internalType": "address",
             "name": "owner",
             "type": "address"
@@ -464,11 +469,6 @@
           {
             "internalType": "uint256",
             "name": "time",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "duration",
             "type": "uint256"
           },
           {
@@ -596,6 +596,11 @@
         "type": "bool"
       },
       {
+        "internalType": "bool",
+        "name": "onsite",
+        "type": "bool"
+      },
+      {
         "internalType": "address",
         "name": "owner",
         "type": "address"
@@ -603,11 +608,6 @@
       {
         "internalType": "uint256",
         "name": "time",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "duration",
         "type": "uint256"
       },
       {

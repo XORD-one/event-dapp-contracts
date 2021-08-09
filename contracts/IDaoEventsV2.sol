@@ -17,9 +17,9 @@ interface IDaoEventsV2 {
     struct Event {
         bool oneTimeBuy;
         bool token; // false means free
+        bool onsite; // true means event is onsite
         address owner;
         uint256 time;
-        uint256 duration;
         uint256 totalQuantity;
         uint256 totalQntySold;
         string name;

@@ -10,25 +10,24 @@ async function main() {
   const balance = await deployer.getBalance();
   console.log(`Account balance: ${balance.toString()}`);
 
-  /*
-  const Oracle = await ethers.getContractFactory("Oracle");
-  const oracle = await Oracle.deploy();
-  // console.log(oracle);
-  console.log(`Oracle address: ${oracle.address}`);
-  */
+  // const Oracle = await ethers.getContractFactory("Oracle");
+  // const oracle = await Oracle.deploy();
+  // // console.log(oracle);
+  // console.log(`Oracle address: ${oracle.address}`);
+
+  // "0x6b1f007951d77dfe220b2ad010c8f5cd27231158", // goerli phnx
+  // "0xd68c6345f969603500f14A648Ad35d02B45729c7" // goerli oracle
 
   const DaoEventsV2 = await ethers.getContractFactory("DaoEventsV2");
   const daoEventsV2 = await DaoEventsV2.deploy(
-    "0xfe1b6ABc39E46cEc54d275efB4b29B33be176c2A", // phnx
-    "0x570c60deb26Ec72F74f2c917f767070F0b27f674"
+    "0xfe1b6ABc39E46cEc54d275efB4b29B33be176c2A", // rinkeby phnx
+    "0x570c60deb26Ec72F74f2c917f767070F0b27f674" // rinkeby oracle
   );
   // console.log(daoEventsV2);
   console.log(`DaoEventsV2 address: ${daoEventsV2.address}`);
 
-  // oracle -> https://rinkeby.etherscan.io/address/0x570c60deb26Ec72F74f2c917f767070F0b27f674#code
-  // daoeventsv2 -> https://rinkeby.etherscan.io/address/0xe88c67E2B51CE139439D552D37154F918054de56#code
-
-  // 0.5.17 with no event owner event: https://rinkeby.etherscan.io/address/0x7291f72f8E2B29D2c56f2F5B811487587701dC8b#code
+  // oracle ->
+  // daoeventsv2 ->
 }
 
 main()

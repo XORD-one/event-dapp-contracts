@@ -560,10 +560,10 @@ interface IERC20 {
 contract Oracle is IOracle {
     using FixedPoint for *;
     using SafeMath for uint256;
-    address public constant WETH = 0xc778417E063141139Fce010982780140Aa0cD5Ab; // rinkeby
-    address public constant PHNX = 0xfe1b6ABc39E46cEc54d275efB4b29B33be176c2A; // rinkeby
+    address public constant WETH = 0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6; // goerli
+    address public constant PHNX = 0x6b1f007951D77dFE220B2aD010C8f5Cd27231158; // goerli
     address public constant UNISWAP_V2_FACTORY =
-        0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f; // rinkeby
+        0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f; // goerli
     IUniswapV2Factory factoryInterface;
     mapping(address => uint256) public cummulativeAveragePrice;
     mapping(address => uint256) public cummulativeEthPrice;
