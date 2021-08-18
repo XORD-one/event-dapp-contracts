@@ -6,7 +6,7 @@
 
 <!-- previous contract -> [daoeventsv2](https://rinkeby.etherscan.io/address/0x7291f72f8E2B29D2c56f2F5B811487587701dC8b) -->
 
-[daoeventsv2](https://rinkeby.etherscan.io/address/0x4cC635b766B39e68b2414f30554730b3eF89148c)
+[daoeventsv2](https://rinkeby.etherscan.io/address/0x4FB4443f1B465270BeCcaaD1af259c6207d63c9e)
 
 ### Goerli Testnet deployed links
 
@@ -14,4 +14,4 @@
 
 [oracle](https://goerli.etherscan.io/address/0xd68c6345f969603500f14A648Ad35d02B45729c7)
 
-[daoeventsv2](https://goerli.etherscan.io/address/0x01CE152Df036C9eDCCa067e924FF85a07A8d38FC)
+[daoeventsv2](https://goerli.etherscan.io/address/0x74695CEF506d042004f4ebf035447dbA6D9Fd416)

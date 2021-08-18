@@ -25,6 +25,7 @@ interface IDaoEventsV2 {
         string name;
         string topic;
         string location;
+        string city;
         string ipfsHash;
         bool[] ticketLimited;
         uint256[] tktQnty;

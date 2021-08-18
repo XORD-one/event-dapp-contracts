@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./IDaoEventsV2.sol";
 import "./EventTicketV2.sol";
 
-import "hardhat/console.sol";
+// import "hardhat/console.sol";
 
 interface IERC20 {
     function transferFrom(

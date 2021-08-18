@@ -124,6 +124,11 @@
           },
           {
             "internalType": "string",
+            "name": "city",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
             "name": "ipfsHash",
             "type": "string"
           },
@@ -449,6 +454,11 @@
           {
             "internalType": "string",
             "name": "location",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "city",
             "type": "string"
           },
           {
