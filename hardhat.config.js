@@ -45,6 +45,9 @@ module.exports = {
       {
         version: "0.6.6",
       },
+      {
+        version: "0.4.17",
+      },
     ],
   },
   networks: {
@@ -128,7 +131,7 @@ module.exports = {
     apiKey: process.env.ETHERSCAN_API_KEY,
   },
   abiExporter: {
-    path: "./abi-exporter",
+    path: "./abi_exporter",
     clear: true,
     flat: true,
     // only: [':ERC20$'],

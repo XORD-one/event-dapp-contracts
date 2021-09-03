@@ -15,3 +15,20 @@
 [oracle](https://goerli.etherscan.io/address/0xd68c6345f969603500f14A648Ad35d02B45729c7)
 
 [daoeventsv2](https://goerli.etherscan.io/address/0x74695CEF506d042004f4ebf035447dbA6D9Fd416)
+
+<!-- Rinkeby usdt and phnx new contracts -->
+
+phnx ->
+https://rinkeby.etherscan.io/address/0x521855AA99a80Cb467A12b1881f05CF9440c7023
+
+usdt ->
+https://rinkeby.etherscan.io/address/0x0cEbA92298b655C827D224D33461B4A1F9C418a6
+
+pair contract ->
+https://rinkeby.etherscan.io/address/0x2f6dafcFc16704e3deBF41472734E651054525D9
+
+oracle ->
+https://rinkeby.etherscan.io/address/0xB89bBa46118E7Ac201A5A83AE0ab71f790Fe3B3F
+
+daoevents ->
+https://rinkeby.etherscan.io/address/0x7315d570345cAa22F664e58829A1c705A2fE455c

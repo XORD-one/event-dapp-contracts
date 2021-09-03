@@ -21,7 +21,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
     uint256 public eventIds;
     address public tokenAddress;
     IOracle public oracle;
-    address public USDT = 0xD9BA894E0097f8cC2BBc9D24D308b98e36dc6D02; // rinkeby usdt
+    address public USDT = 0x0cEbA92298b655C827D224D33461B4A1F9C418a6; // rinkeby new usdt
 
     // Mapping from owner to list of owned events IDs.
     mapping(address => uint256[]) private ownedEvents;
