@@ -7,8 +7,6 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./IDaoEventsV2.sol";
 import "./EventTicketV2.sol";
 
-// import "hardhat/console.sol";
-
 interface IERC20 {
     function transferFrom(
         address sender,
@@ -45,6 +43,46 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
     modifier eventExist(uint256 _id) {
         require(_id <= eventIds, "Event does not exist.");
         _;
+    }
+
+    function getTicketLimited(uint256 _eventId)
+        public
+        view
+        returns (bool[] memory)
+    {
+        return events[_eventId].ticketLimited;
+    }
+
+    function getTktQnty(uint256 _eventId)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        return events[_eventId].tktQnty;
+    }
+
+    function getPrices(uint256 _eventId)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        return events[_eventId].prices;
+    }
+
+    function getTktQntySold(uint256 _eventId)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        return events[_eventId].tktQntySold;
+    }
+
+    function getCategories(uint256 _eventId)
+        public
+        view
+        returns (string[] memory)
+    {
+        return events[_eventId].categories;
     }
 
     function changeToken(address _token) public onlyOwner() {

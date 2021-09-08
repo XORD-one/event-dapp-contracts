@@ -11,19 +11,9 @@ async function main() {
   const balance = await deployer.getBalance();
   console.log(`Account balance: ${balance.toString()}`);
 
-  // const oracle = await deployContract(deployer, "Oracle");
-  // console.log(`Oracle address: ${oracle.address}`);
-  // tx = oracle.deployTransaction;
-  // await logGas(tx);
-  // if (chainId != 31337 && chainId != 1337) {
-  //   await verifyContract(oracle.address, [], tx, { ms: 120000 });
-  // }
-
-  // await delayLog(60000);
-
   const args = [
     "0x521855AA99a80Cb467A12b1881f05CF9440c7023", // rinkeby new phnx
-    "0xB89bBa46118E7Ac201A5A83AE0ab71f790Fe3B3F", // rinkeby new oracle
+    "0xb8B47C2F67f23616AE61ce174d9AE59E6649EfF7", // rinkeby new oracle
   ];
   const daoEventsV2 = await deployContract(deployer, "DaoEventsV2", args);
   console.log(`DaoEventsV2 address: ${daoEventsV2.address}`);

@@ -18,6 +18,9 @@
 
 <!-- Rinkeby usdt and phnx new contracts -->
 
+WETH ->
+https://rinkeby.etherscan.io/address/0xc778417E063141139Fce010982780140Aa0cD5Ab
+
 phnx ->
 https://rinkeby.etherscan.io/address/0x521855AA99a80Cb467A12b1881f05CF9440c7023
 
@@ -28,7 +31,7 @@ pair contract ->
 https://rinkeby.etherscan.io/address/0x2f6dafcFc16704e3deBF41472734E651054525D9
 
 oracle ->
-https://rinkeby.etherscan.io/address/0xB89bBa46118E7Ac201A5A83AE0ab71f790Fe3B3F
+https://rinkeby.etherscan.io/address/0xb8B47C2F67f23616AE61ce174d9AE59E6649EfF7
 
 daoevents ->
-https://rinkeby.etherscan.io/address/0x7315d570345cAa22F664e58829A1c705A2fE455c
+https://rinkeby.etherscan.io/address/0xa3bf4a584A164eca4a10545419141F1247c56df8#code

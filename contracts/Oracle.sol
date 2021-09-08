@@ -559,11 +559,12 @@ interface IERC20 {
 
 contract Oracle is IOracle {
     using FixedPoint for *;
-    using SafeMath for uint256;
-    address public constant WETH = 0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6; // goerli
-    address public constant PHNX = 0x6b1f007951D77dFE220B2aD010C8f5Cd27231158; // goerli
+    using SafeMath for *;
+    // using SafeMath for uint32;
+    address public constant WETH = 0xc778417E063141139Fce010982780140Aa0cD5Ab; // rinkeby
+    address public constant PHNX = 0x521855AA99a80Cb467A12b1881f05CF9440c7023; // rinkeby
     address public constant UNISWAP_V2_FACTORY =
-        0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f; // goerli
+        0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f; // rinkeby
     IUniswapV2Factory factoryInterface;
     mapping(address => uint256) public cummulativeAveragePrice;
     mapping(address => uint256) public cummulativeEthPrice;
@@ -610,10 +611,12 @@ contract Oracle is IOracle {
         }
     }
 
+    // phnxPerUsdt
     function fetch(address token) external override returns (uint256 price) {
         if (
             cummulativeAveragePrice[token] == 0 ||
-            (uint32(block.timestamp) - lastTokenTimestamp[token]) >= 30 minutes
+            (uint32(block.timestamp).sub(lastTokenTimestamp[token])) >=
+            30 minutes
         ) {
             setValues(token);
         }
@@ -630,12 +633,13 @@ contract Oracle is IOracle {
     function fetchPhnxPrice() external override returns (uint256 price) {
         if (
             cummulativeAveragePrice[PHNX] == 0 ||
-            (uint32(block.timestamp) - lastTokenTimestamp[PHNX]) >= 30 minutes
+            (uint32(block.timestamp).sub(lastTokenTimestamp[PHNX])) >=
+            30 minutes
         ) {
             setValues(PHNX);
         }
         uint32 timeElapsed =
-            lastTokenTimestamp[PHNX] - tokenToTimestampLast[PHNX];
+            uint32((lastTokenTimestamp[PHNX]).sub(tokenToTimestampLast[PHNX]));
         price = _calculate(
             cummulativeEthPrice[PHNX],
             cummulativeAveragePriceReserve[PHNX],
@@ -653,7 +657,9 @@ contract Oracle is IOracle {
         address poolAddress = factoryInterface.getPair(WETH, token);
         if (poolAddress == address(0)) return 0;
         uint32 timeElapsed =
-            lastTokenTimestamp[token] - tokenToTimestampLast[token];
+            uint32(
+                (lastTokenTimestamp[token]).sub(tokenToTimestampLast[token])
+            );
         ethPerToken = _calculate(
             cummulativeAveragePrice[token],
             cummulativeEthPriceReserve[token],
