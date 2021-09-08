@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.5.17;
-pragma experimental ABIEncoderV2;
+pragma solidity ^0.8.7;
 
 import "./IOracle.sol";
 
@@ -56,14 +55,4 @@ interface IDaoEventsV2 {
     event CreatedEvent(address indexed owner, uint256 eventId, Event);
 
     event SoldTicketDetails2(SoldTicketStruct, address owner);
-
-    function eventsOf(address _owner) external view returns (uint256[] memory);
-
-    function getEventsCount() external view returns (uint256);
-
-    function changeToken(address _token) external;
-
-    function createEvent(Event calldata _event) external;
-
-    function buyTicket(BuyTicket calldata _buyTicket) external;
 }

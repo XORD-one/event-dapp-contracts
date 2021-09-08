@@ -1,16 +1,15 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.5.17;
-pragma experimental ABIEncoderV2;
+pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721Full.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "./IDaoEventsV2.sol";
 
-contract EventTicketV2 is IDaoEventsV2, ERC721Full {
+contract EventTicketV2 is IDaoEventsV2, ERC721URIStorage {
     Ticket[] internal tickets;
 
     uint256 public ticketIds;
 
-    constructor() public ERC721Full("PhoenixDAO Ticket", "DDD") {}
+    constructor() ERC721("PhoenixDAO Ticket", "DDD") {}
 
     function getTicket(uint256 _id)
         public

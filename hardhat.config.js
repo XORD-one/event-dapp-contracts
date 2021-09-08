@@ -23,6 +23,16 @@ module.exports = {
   solidity: {
     compilers: [
       {
+        version: "0.8.7",
+        settings: {
+          // https://hardhat.org/hardhat-network/#solidity-optimizer-support
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+      {
         version: "0.5.17",
         settings: {
           // https://hardhat.org/hardhat-network/#solidity-optimizer-support
