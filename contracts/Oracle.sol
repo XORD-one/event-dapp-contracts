@@ -424,8 +424,11 @@ library UniswapV2OracleLibrary {
         uint256 price0Cumulative = IUniswapV2Pair(pair).price0CumulativeLast();
         uint256 price1Cumulative = IUniswapV2Pair(pair).price1CumulativeLast();
         // if time has elapsed since the last update on the pair, mock the accumulated price values
-        (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast) =
-            IUniswapV2Pair(pair).getReserves();
+        (
+            uint112 reserve0,
+            uint112 reserve1,
+            uint32 blockTimestampLast
+        ) = IUniswapV2Pair(pair).getReserves();
         if (blockTimestampLast != blockTimestamp) {
             // subtraction overflow is desired
             uint32 timeElapsed = blockTimestamp - blockTimestampLast;
@@ -591,9 +594,9 @@ contract Oracle is IOracle {
                     address(pool)
                 );
                 cummulativeAveragePriceReserve[token] = IUniswapV2Pair(pool)
-                    .price0CumulativeLast();
+                .price0CumulativeLast();
                 cummulativeEthPriceReserve[token] = IUniswapV2Pair(pool)
-                    .price1CumulativeLast();
+                .price1CumulativeLast();
             } else {
                 (
                     cummulativeAveragePrice[token],
@@ -603,9 +606,9 @@ contract Oracle is IOracle {
                     address(pool)
                 );
                 cummulativeAveragePriceReserve[token] = IUniswapV2Pair(pool)
-                    .price1CumulativeLast();
+                .price1CumulativeLast();
                 cummulativeEthPriceReserve[token] = IUniswapV2Pair(pool)
-                    .price0CumulativeLast();
+                .price0CumulativeLast();
             }
             lastTokenTimestamp[token] = uint32(block.timestamp);
         }
@@ -616,7 +619,7 @@ contract Oracle is IOracle {
         if (
             cummulativeAveragePrice[token] == 0 ||
             (uint32(block.timestamp).sub(lastTokenTimestamp[token])) >=
-            30 minutes
+            3 minutes
         ) {
             setValues(token);
         }
@@ -633,13 +636,13 @@ contract Oracle is IOracle {
     function fetchPhnxPrice() external override returns (uint256 price) {
         if (
             cummulativeAveragePrice[PHNX] == 0 ||
-            (uint32(block.timestamp).sub(lastTokenTimestamp[PHNX])) >=
-            30 minutes
+            (uint32(block.timestamp).sub(lastTokenTimestamp[PHNX])) >= 3 minutes
         ) {
             setValues(PHNX);
         }
-        uint32 timeElapsed =
-            uint32((lastTokenTimestamp[PHNX]).sub(tokenToTimestampLast[PHNX]));
+        uint32 timeElapsed = uint32(
+            (lastTokenTimestamp[PHNX]).sub(tokenToTimestampLast[PHNX])
+        );
         price = _calculate(
             cummulativeEthPrice[PHNX],
             cummulativeAveragePriceReserve[PHNX],
@@ -656,10 +659,9 @@ contract Oracle is IOracle {
     {
         address poolAddress = factoryInterface.getPair(WETH, token);
         if (poolAddress == address(0)) return 0;
-        uint32 timeElapsed =
-            uint32(
-                (lastTokenTimestamp[token]).sub(tokenToTimestampLast[token])
-            );
+        uint32 timeElapsed = uint32(
+            (lastTokenTimestamp[token]).sub(tokenToTimestampLast[token])
+        );
         ethPerToken = _calculate(
             cummulativeAveragePrice[token],
             cummulativeEthPriceReserve[token],
@@ -674,12 +676,9 @@ contract Oracle is IOracle {
         uint32 timeElapsed,
         address token
     ) public view returns (uint256 assetValue) {
-        FixedPoint.uq112x112 memory priceTemp =
-            FixedPoint.uq112x112(
-                uint224(
-                    (latestCommulative.sub(oldCommulative)).div(timeElapsed)
-                )
-            );
+        FixedPoint.uq112x112 memory priceTemp = FixedPoint.uq112x112(
+            uint224((latestCommulative.sub(oldCommulative)).div(timeElapsed))
+        );
         uint8 decimals = IERC20(token).decimals();
         // Maybe check if deciamls not 18. Or rather not add those pairs in protocol.
         assetValue = priceTemp.mul(10**decimals).decode144();
