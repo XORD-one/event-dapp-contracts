@@ -19,7 +19,7 @@ describe('PolkalokrToken', () =>{
 })
 
 
-    it('Should mint tokens', async () =>{
+    xit('Should mint tokens', async () =>{
         let balance = await polakalokr.totalSupply();
         console.log('total supply Before Mint ===>',balance.toString());
 
@@ -27,10 +27,10 @@ describe('PolkalokrToken', () =>{
         balance = await polakalokr.totalSupply();
         console.log('total supply  After Mint ===>',balance.toString());
     })
-    it('Should only mint tokens by owner', async () =>{
+    xit('Should only mint tokens by owner', async () =>{
         await expect( polakalokr.connect(accountOne).mint(accountOne.address,10000000)).to.be.revertedWith("minting forbidden");
     })
-    it('Should burn tokens', async () =>{
+    xit('Should burn tokens', async () =>{
         await polakalokr.mint(owner.address,100000000000000);
         let balance = await polakalokr.balanceOf(owner.address);
         console.log("Owner balance Before Burn ==>",balance.toString());
@@ -39,16 +39,16 @@ describe('PolkalokrToken', () =>{
         console.log("Owner balance After Burn ==>",balance.toString());
     })
 
-    it('Should only burn tokens by owner', async () =>{
+    xit('Should only burn tokens by owner', async () =>{
         await expect( polakalokr.connect(accountOne).burnFrom(accountOne.address,10000000)).to.be.revertedWith("burn forbidden");
     })
 
-    it('burn should fail when not given approval', async () =>{
+    xit('burn should fail when not given approval', async () =>{
         await polakalokr.mint(accountOne.address,100000000000000);
         await expect( polakalokr.burnFrom(accountOne.address,10000000)).to.be.revertedWith("ERC20: burn amount exceeds allowance");
     })
 
-    it('burn should succeed when given approval', async () =>{
+    xit('burn should succeed when given approval', async () =>{
         await polakalokr.mint(accountOne.address,100000000000000);
         await polakalokr.connect(accountOne).approve(owner.address,100000000000000);
         await polakalokr.burnFrom(accountOne.address,10000000);

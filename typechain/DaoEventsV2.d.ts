@@ -38,6 +38,7 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     "getPrices(uint256)": FunctionFragment;
     "getTicket(uint256)": FunctionFragment;
     "getTicketLimited(uint256)": FunctionFragment;
+    "getTicketOwner(address,uint256)": FunctionFragment;
     "getTktQnty(uint256)": FunctionFragment;
     "getTktQntySold(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
@@ -48,6 +49,7 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "setBaseURI(string)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "ticketIds()": FunctionFragment;
@@ -82,6 +84,7 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -134,6 +137,10 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getTicketOwner",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getTktQnty",
     values: [BigNumberish]
   ): string;
@@ -164,6 +171,7 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     functionFragment: "setApprovalForAll",
     values: [string, boolean]
   ): string;
+  encodeFunctionData(functionFragment: "setBaseURI", values: [string]): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
@@ -225,6 +233,10 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     functionFragment: "getTicketLimited",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTicketOwner",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getTktQnty", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getTktQntySold",
@@ -250,6 +262,7 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     functionFragment: "setApprovalForAll",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setBaseURI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -360,6 +373,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -378,11 +392,12 @@ export class DaoEventsV2 extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "createEvent((bool,bool,bool,address,uint256,uint256,uint256,string,string,string,string,string,bool[],uint256[],uint256[],uint256[],string[]))"(
+    "createEvent((bool,bool,bool,bool,address,uint256,uint256,uint256,string,string,string,string,string,bool[],uint256[],uint256[],uint256[],string[]))"(
       _event: {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -423,6 +438,7 @@ export class DaoEventsV2 extends Contract {
         boolean,
         boolean,
         boolean,
+        boolean,
         string,
         BigNumber,
         BigNumber,
@@ -436,6 +452,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumber;
         totalQuantity: BigNumber;
@@ -456,6 +473,7 @@ export class DaoEventsV2 extends Contract {
         boolean,
         boolean,
         boolean,
+        boolean,
         string,
         BigNumber,
         BigNumber,
@@ -469,6 +487,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumber;
         totalQuantity: BigNumber;
@@ -574,6 +593,18 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<[boolean[]]>;
 
+    getTicketOwner(
+      _userAddress: string,
+      _eventId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    "getTicketOwner(address,uint256)"(
+      _userAddress: string,
+      _eventId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     getTktQnty(
       _eventId: BigNumberish,
       overrides?: CallOverrides
@@ -656,6 +687,16 @@ export class DaoEventsV2 extends Contract {
     "setApprovalForAll(address,bool)"(
       operator: string,
       approved: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    setBaseURI(
+      baseURI_: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setBaseURI(string)"(
+      baseURI_: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -779,6 +820,7 @@ export class DaoEventsV2 extends Contract {
       oneTimeBuy: boolean;
       token: boolean;
       onsite: boolean;
+      isPHNX: boolean;
       owner: string;
       time: BigNumberish;
       totalQuantity: BigNumberish;
@@ -797,11 +839,12 @@ export class DaoEventsV2 extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "createEvent((bool,bool,bool,address,uint256,uint256,uint256,string,string,string,string,string,bool[],uint256[],uint256[],uint256[],string[]))"(
+  "createEvent((bool,bool,bool,bool,address,uint256,uint256,uint256,string,string,string,string,string,bool[],uint256[],uint256[],uint256[],string[]))"(
     _event: {
       oneTimeBuy: boolean;
       token: boolean;
       onsite: boolean;
+      isPHNX: boolean;
       owner: string;
       time: BigNumberish;
       totalQuantity: BigNumberish;
@@ -842,6 +885,7 @@ export class DaoEventsV2 extends Contract {
       boolean,
       boolean,
       boolean,
+      boolean,
       string,
       BigNumber,
       BigNumber,
@@ -855,6 +899,7 @@ export class DaoEventsV2 extends Contract {
       oneTimeBuy: boolean;
       token: boolean;
       onsite: boolean;
+      isPHNX: boolean;
       owner: string;
       time: BigNumber;
       totalQuantity: BigNumber;
@@ -875,6 +920,7 @@ export class DaoEventsV2 extends Contract {
       boolean,
       boolean,
       boolean,
+      boolean,
       string,
       BigNumber,
       BigNumber,
@@ -888,6 +934,7 @@ export class DaoEventsV2 extends Contract {
       oneTimeBuy: boolean;
       token: boolean;
       onsite: boolean;
+      isPHNX: boolean;
       owner: string;
       time: BigNumber;
       totalQuantity: BigNumber;
@@ -975,6 +1022,18 @@ export class DaoEventsV2 extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean[]>;
 
+  getTicketOwner(
+    _userAddress: string,
+    _eventId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  "getTicketOwner(address,uint256)"(
+    _userAddress: string,
+    _eventId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   getTktQnty(
     _eventId: BigNumberish,
     overrides?: CallOverrides
@@ -1054,6 +1113,16 @@ export class DaoEventsV2 extends Contract {
   "setApprovalForAll(address,bool)"(
     operator: string,
     approved: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  setBaseURI(
+    baseURI_: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setBaseURI(string)"(
+    baseURI_: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1171,6 +1240,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -1189,11 +1259,12 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "createEvent((bool,bool,bool,address,uint256,uint256,uint256,string,string,string,string,string,bool[],uint256[],uint256[],uint256[],string[]))"(
+    "createEvent((bool,bool,bool,bool,address,uint256,uint256,uint256,string,string,string,string,string,bool[],uint256[],uint256[],uint256[],string[]))"(
       _event: {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -1234,6 +1305,7 @@ export class DaoEventsV2 extends Contract {
         boolean,
         boolean,
         boolean,
+        boolean,
         string,
         BigNumber,
         BigNumber,
@@ -1247,6 +1319,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumber;
         totalQuantity: BigNumber;
@@ -1267,6 +1340,7 @@ export class DaoEventsV2 extends Contract {
         boolean,
         boolean,
         boolean,
+        boolean,
         string,
         BigNumber,
         BigNumber,
@@ -1280,6 +1354,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumber;
         totalQuantity: BigNumber;
@@ -1367,6 +1442,18 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean[]>;
 
+    getTicketOwner(
+      _userAddress: string,
+      _eventId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "getTicketOwner(address,uint256)"(
+      _userAddress: string,
+      _eventId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     getTktQnty(
       _eventId: BigNumberish,
       overrides?: CallOverrides
@@ -1446,6 +1533,13 @@ export class DaoEventsV2 extends Contract {
     "setApprovalForAll(address,bool)"(
       operator: string,
       approved: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setBaseURI(baseURI_: string, overrides?: CallOverrides): Promise<void>;
+
+    "setBaseURI(string)"(
+      baseURI_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1599,6 +1693,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -1617,11 +1712,12 @@ export class DaoEventsV2 extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "createEvent((bool,bool,bool,address,uint256,uint256,uint256,string,string,string,string,string,bool[],uint256[],uint256[],uint256[],string[]))"(
+    "createEvent((bool,bool,bool,bool,address,uint256,uint256,uint256,string,string,string,string,string,bool[],uint256[],uint256[],uint256[],string[]))"(
       _event: {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -1719,6 +1815,18 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getTicketOwner(
+      _userAddress: string,
+      _eventId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getTicketOwner(address,uint256)"(
+      _userAddress: string,
+      _eventId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getTktQnty(
       _eventId: BigNumberish,
       overrides?: CallOverrides
@@ -1801,6 +1909,13 @@ export class DaoEventsV2 extends Contract {
     "setApprovalForAll(address,bool)"(
       operator: string,
       approved: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    setBaseURI(baseURI_: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "setBaseURI(string)"(
+      baseURI_: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1928,6 +2043,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -1946,11 +2062,12 @@ export class DaoEventsV2 extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "createEvent((bool,bool,bool,address,uint256,uint256,uint256,string,string,string,string,string,bool[],uint256[],uint256[],uint256[],string[]))"(
+    "createEvent((bool,bool,bool,bool,address,uint256,uint256,uint256,string,string,string,string,string,bool[],uint256[],uint256[],uint256[],string[]))"(
       _event: {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -2059,6 +2176,18 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getTicketOwner(
+      _userAddress: string,
+      _eventId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getTicketOwner(address,uint256)"(
+      _userAddress: string,
+      _eventId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getTktQnty(
       _eventId: BigNumberish,
       overrides?: CallOverrides
@@ -2141,6 +2270,16 @@ export class DaoEventsV2 extends Contract {
     "setApprovalForAll(address,bool)"(
       operator: string,
       approved: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    setBaseURI(
+      baseURI_: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setBaseURI(string)"(
+      baseURI_: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

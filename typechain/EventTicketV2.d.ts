@@ -31,6 +31,7 @@ interface EventTicketV2Interface extends ethers.utils.Interface {
     "ownerOf(uint256)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "setBaseURI(string)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "ticketIds()": FunctionFragment;
@@ -69,6 +70,7 @@ interface EventTicketV2Interface extends ethers.utils.Interface {
     functionFragment: "setApprovalForAll",
     values: [string, boolean]
   ): string;
+  encodeFunctionData(functionFragment: "setBaseURI", values: [string]): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
@@ -106,6 +108,7 @@ interface EventTicketV2Interface extends ethers.utils.Interface {
     functionFragment: "setApprovalForAll",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setBaseURI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -274,6 +277,16 @@ export class EventTicketV2 extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    setBaseURI(
+      baseURI_: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setBaseURI(string)"(
+      baseURI_: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -427,6 +440,16 @@ export class EventTicketV2 extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  setBaseURI(
+    baseURI_: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setBaseURI(string)"(
+    baseURI_: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides
@@ -574,6 +597,13 @@ export class EventTicketV2 extends Contract {
     "setApprovalForAll(address,bool)"(
       operator: string,
       approved: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setBaseURI(baseURI_: string, overrides?: CallOverrides): Promise<void>;
+
+    "setBaseURI(string)"(
+      baseURI_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -744,6 +774,13 @@ export class EventTicketV2 extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    setBaseURI(baseURI_: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "setBaseURI(string)"(
+      baseURI_: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -887,6 +924,16 @@ export class EventTicketV2 extends Contract {
     "setApprovalForAll(address,bool)"(
       operator: string,
       approved: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    setBaseURI(
+      baseURI_: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setBaseURI(string)"(
+      baseURI_: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

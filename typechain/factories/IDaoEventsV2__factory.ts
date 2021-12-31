@@ -50,6 +50,11 @@ const _abi = [
             type: "bool",
           },
           {
+            internalType: "bool",
+            name: "isPHNX",
+            type: "bool",
+          },
+          {
             internalType: "address",
             name: "owner",
             type: "address",

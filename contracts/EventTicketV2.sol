@@ -2,7 +2,7 @@
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol';
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 import "./IDaoEventsV2.sol";
 
@@ -14,6 +14,9 @@ contract EventTicketV2 is IDaoEventsV2, ERC721URIStorage {
     Ticket[] internal tickets;
 
     uint256 public ticketIds;
+
+    // Optional mapping for token URIs
+    mapping(uint256 => string) private _tokenURIs;
 
     constructor() ERC721("PhoenixDAO Ticket", "DDD") {}
 
@@ -27,6 +30,28 @@ contract EventTicketV2 is IDaoEventsV2, ERC721URIStorage {
             "DaoEvents:getTicket: Invalid ID"
         );
         return tickets[_id - 1];
+    }
+
+    function uintToString(uint _i) internal pure returns (string memory _uintAsString) {
+        if (_i == 0) {
+            return "0";
+        }
+        uint j = _i;
+        uint len;
+        while (j != 0) {
+            len++;
+            j /= 10;
+        }
+        bytes memory bstr = new bytes(len);
+        uint k = len;
+        while (_i != 0) {
+            k = k-1;
+            uint8 temp = (48 + uint8(_i - _i / 10 * 10));
+            bytes1 b1 = bytes1(temp);
+            bstr[k] = b1;
+            _i /= 10;
+        }
+        return string(bstr);
     }
 
     function ticketsOf(address owner) external view returns (uint256[] memory) {
@@ -63,7 +88,7 @@ contract EventTicketV2 is IDaoEventsV2, ERC721URIStorage {
 
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
             require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
-
+            
             string memory _tokenURI = _tokenURIs[tokenId];
             string memory base = _baseURI();
             
@@ -76,6 +101,7 @@ contract EventTicketV2 is IDaoEventsV2, ERC721URIStorage {
                 return string(abi.encodePacked(base, _tokenURI));
             }
             // If there is a baseURI but no tokenURI, concatenate the tokenID to the baseURI.
-            return string(abi.encodePacked(base, tokenId.toString()));
+            // return string(abi.encodePacked(base, tokenId.toString()));
+            return string(abi.encodePacked(base, uintToString(tokenId)));
         }
 }

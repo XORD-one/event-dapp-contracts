@@ -45,6 +45,8 @@ if (!process.env.INFURA_API_KEY) {
   throw new Error("Please set your INFURA_API_KEY in a .env file");
 } else {
   infuraApiKey = process.env.INFURA_API_KEY;
+  console.log("infuraApiKey");
+  console.log(infuraApiKey);
 }
 
 function createTestnetConfig(network: keyof typeof chainIds): NetworkUserConfig {
@@ -106,9 +108,16 @@ const config: HardhatUserConfig = {
       },
       chainId: chainIds.hardhat,
     },
+    rinkeby: {
+      url: "https://rinkeby.infura.io/v3/" + infuraApiKey,
+      accounts: [`${process.env.PRIVATE_KEY}`],
+      // gas: 2100000,
+      // gasPrice: 8000000000,
+      // saveDeployments: true,
+    },
     goerli: createTestnetConfig("goerli"),
     kovan: createTestnetConfig("kovan"),
-    rinkeby: createTestnetConfig("rinkeby"),
+    // rinkeby: createTestnetConfig("rinkeby"),
     ropsten: createTestnetConfig("ropsten"),
     bsctestnet: createTestnetConfig("bsctestnet"),
     mumbai: createTestnetConfig("mumbai"),

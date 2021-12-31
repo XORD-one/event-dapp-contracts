@@ -29,7 +29,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
     // Mapping from address to eventId to boughOrNot
     mapping(address => mapping(uint256 => bool)) ticketBought;
 
-    constructor(address _token, address _oracle) {
+    constructor(address _token, address _oracle)  {
         tokenAddress = _token;
         oracle = IOracle(_oracle);
     }
@@ -50,6 +50,15 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         returns (bool[] memory)
     {
         return events[_eventId].ticketLimited;
+    }
+    
+    function getTicketOwner(address _userAddress, uint _eventId)
+        public
+        view
+        returns (bool)
+    {   
+        //false means ->  let him buy
+        return ticketBought[_userAddress][_eventId];
     }
 
     function getTktQnty(uint256 _eventId)
@@ -153,8 +162,16 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
             _phnxPrice = 0;
         } else {
             // event is paid
-            _usdtPrice = _event.prices[_buyTicket.categoryIndex];
-            _phnxPrice = (_usdtPrice * oracle.fetch(USDT)) / 1e18;
+            if(_event.isPHNX) {
+                require(_event.isPHNX, "Ticket payment has to be in PHNX");
+                //event price is in phnx
+                _usdtPrice = 0;
+                _phnxPrice = _event.prices[_buyTicket.categoryIndex];
+            } else {
+                //event price is in usdt
+                _usdtPrice = _event.prices[_buyTicket.categoryIndex];
+                _phnxPrice = (_usdtPrice * oracle.fetch(    )) / 1e18;
+            }
         }
 
         uint256 _ticketId = ticketIds;

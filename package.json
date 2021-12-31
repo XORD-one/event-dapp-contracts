@@ -7,8 +7,8 @@
     "url": "https://paulrberg.com"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.2.0",
-    "@openzeppelin/contracts-upgradeable": "^4.0.0"
+    "@openzeppelin/contracts": "^4.4.1",
+    "@openzeppelin/contracts-upgradeable": "^4.4.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^9.1.2",
@@ -28,13 +28,13 @@
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
     "chai": "^4.2.0",
-    "commitizen": "^4.2.1",
+    "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
     "dotenv": "^8.2.0",
     "eslint": "^7.24.0",
     "eslint-config-prettier": "^8.2.0",
     "ethereum-waffle": "^3.3.0",
-    "ethers": "^5.1.4",
+    "ethers": "^5.5.2",
     "fs-extra": "^9.0.1",
     "hardhat": "^2.2.0",
     "hardhat-gas-reporter": "^1.0.4",

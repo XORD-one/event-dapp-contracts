@@ -17,6 +17,7 @@ interface IDaoEventsV2 {
         bool oneTimeBuy;
         bool token; // false means free
         bool onsite; // true means event is onsite
+        bool isPHNX;    //true means event ticket is in PHNX
         address owner;
         uint256 time;
         uint256 totalQuantity;
