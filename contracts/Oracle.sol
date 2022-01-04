@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: <SPDX-License>
 pragma solidity 0.7.5;
-
 interface IUniswapV2Factory {
     event PairCreated(
         address indexed token0,
@@ -564,8 +563,10 @@ contract Oracle is IOracle {
     using FixedPoint for *;
     using SafeMath for *;
     // using SafeMath for uint32;
-    address public constant WETH = 0xc778417E063141139Fce010982780140Aa0cD5Ab; // rinkeby
-    address public constant PHNX = 0x521855AA99a80Cb467A12b1881f05CF9440c7023; // rinkeby
+    // address public constant WETH = 0xc778417E063141139Fce010982780140Aa0cD5Ab; // rinkeby
+    // address public constant PHNX = 0x521855AA99a80Cb467A12b1881f05CF9440c7023; // rinkeby
+    address public constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; // mainnet
+    address public constant PHNX = 0x38A2fDc11f526Ddd5a607C1F251C065f40fBF2f7; // mainnet
     address public constant UNISWAP_V2_FACTORY =
         0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f; // rinkeby
     IUniswapV2Factory factoryInterface;
@@ -630,6 +631,7 @@ contract Oracle is IOracle {
         if (ethPerToken == 0 || ethPerPhnx == 0) return 0;
         price = (ethPerToken.mul(1e18)).div(ethPerPhnx);
         emit AssetValue(price, block.timestamp);
+        return price;
     }
 
     // PHNXperETH

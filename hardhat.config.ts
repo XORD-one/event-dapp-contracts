@@ -45,8 +45,6 @@ if (!process.env.INFURA_API_KEY) {
   throw new Error("Please set your INFURA_API_KEY in a .env file");
 } else {
   infuraApiKey = process.env.INFURA_API_KEY;
-  console.log("infuraApiKey");
-  console.log(infuraApiKey);
 }
 
 function createTestnetConfig(network: keyof typeof chainIds): NetworkUserConfig {
@@ -107,10 +105,10 @@ const config: HardhatUserConfig = {
         mnemonic,
       },
       chainId: chainIds.hardhat,
-      // forking: {
-      //   url: "https://eth-mainnet.alchemyapi.io/v2/MRA8vBbiivNCQvkI_clJi-8XM0-21oMR",
-      //   blockNumber: 13932080
-      // },
+      forking: {
+        url: "https://eth-mainnet.alchemyapi.io/v2/MRA8vBbiivNCQvkI_clJi-8XM0-21oMR",
+        blockNumber: 13932080
+      },
     },
     rinkeby: {
       url: "https://rinkeby.infura.io/v3/" + infuraApiKey,
