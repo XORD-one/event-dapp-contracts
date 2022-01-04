@@ -75,9 +75,8 @@ let createEventStruct =[false,true,true,true,"0x4Ba7f770DD847C0F5aD10F69fc5809F1
     //below is the mainnet foAddressesrking work
     it('it should deploy oracle', async function () {
         //pre requisit
-        // 1: setup USDT and WRTH mainnet addresses
-        // 2: setup oracle mainnet address
-        // 3: setup hardhat config for mainnet forking
+        //  1: uncomment USDT AND WETH address from Oracle.sol
+        //  2: uncomment mainnet from from hardhat config
         const Oracle = await ethers.getContractFactory("Oracle");
         OracleInstance = await Oracle.deploy();
         mainnetAddresses.NEW_ORACLE = OracleInstance.address;
