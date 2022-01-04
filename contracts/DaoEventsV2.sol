@@ -170,7 +170,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
             } else {
                 //event price is in usdt
                 _usdtPrice = _event.prices[_buyTicket.categoryIndex];
-                _phnxPrice = (_usdtPrice * oracle.fetch(    )) / 1e18;
+                _phnxPrice = (_usdtPrice * oracle.fetch(USDT)) / 1e18;
             }
         }
 
