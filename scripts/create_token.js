@@ -9,9 +9,13 @@ async function main() {
   // console.log("Deployer balance: ", deployerBalance.toString());
   console.log(deployer.address + ':' + ethers.utils.formatEther(deployerBalance));
 
+  //deploy Oracle
+  const Oracle = await ethers.getContractFactory("Oracle");
+  const oracle = await Oracle.deploy();
+  console.log("Oracle address: ", oracle.address);
 
   const DaoEvents = await ethers.getContractFactory("DaoEventsV2");
-  const daoEventsV2 = await DaoEvents.deploy("0x521855AA99a80Cb467A12b1881f05CF9440c7023","0x2A37ab9C39F10d1fF19526BF2E0007847015D7Cc");
+  const daoEventsV2 = await DaoEvents.deploy("0x521855AA99a80Cb467A12b1881f05CF9440c7023",`${oracle.address}`);
   await daoEventsV2.deployed();
 
   console.log("Dao events deployed to ", daoEventsV2.address);

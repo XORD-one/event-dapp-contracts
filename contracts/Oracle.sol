@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: <SPDX-License>
 pragma solidity 0.7.5;
+import "hardhat/console.sol";
 interface IUniswapV2Factory {
     event PairCreated(
         address indexed token0,
@@ -563,10 +564,15 @@ contract Oracle is IOracle {
     using FixedPoint for *;
     using SafeMath for *;
     // using SafeMath for uint32;
+
+    address public constant USDT = 0x0cEbA92298b655C827D224D33461B4A1F9C418a6; // rinkeby new usdt
     address public constant WETH = 0xc778417E063141139Fce010982780140Aa0cD5Ab; // rinkeby
     address public constant PHNX = 0x521855AA99a80Cb467A12b1881f05CF9440c7023; // rinkeby
+    
+    // address public constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7; // mainnet
     // address public constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; // mainnet
     // address public constant PHNX = 0x38A2fDc11f526Ddd5a607C1F251C065f40fBF2f7; // mainnet
+    
     address public constant UNISWAP_V2_FACTORY =
         0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f; // rinkeby
     IUniswapV2Factory factoryInterface;
@@ -580,11 +586,14 @@ contract Oracle is IOracle {
 
     constructor() {
         factoryInterface = IUniswapV2Factory(UNISWAP_V2_FACTORY);
-        setValues(PHNX);
+        // setValues(PHNX);
+        setValues(USDT);
     }
 
     function setValues(address token) public {
         address pool = factoryInterface.getPair(WETH, token);
+        console.log("pool address");
+        console.log(pool);
         if (pool != address(0)) {
             if (WETH < token) {
                 (
@@ -616,6 +625,24 @@ contract Oracle is IOracle {
     }
 
     // phnxPerUsdt
+    // function fetch(address token) external override returns (uint256 price) {
+    //     if (
+    //         cummulativeAveragePrice[token] == 0 ||
+    //         (uint32(block.timestamp).sub(lastTokenTimestamp[token])) >=
+    //         3 minutes
+    //     ) {
+    //         setValues(token);
+    //     }
+    //     uint256 ethPerPhnx = _getAmounts(PHNX);
+    //     emit AssetValue(ethPerPhnx, block.timestamp);
+    //     uint256 ethPerToken = _getAmounts(token);
+    //     emit AssetValue(ethPerToken, block.timestamp);
+    //     if (ethPerToken == 0 || ethPerPhnx == 0) return 0;
+    //     price = (ethPerToken.mul(1e18)).div(ethPerPhnx);
+    //     emit AssetValue(price, block.timestamp);
+    //     return price;
+    // }
+
     function fetch(address token) external override returns (uint256 price) {
         if (
             cummulativeAveragePrice[token] == 0 ||
@@ -624,14 +651,34 @@ contract Oracle is IOracle {
         ) {
             setValues(token);
         }
-        uint256 ethPerPhnx = _getAmounts(PHNX);
-        emit AssetValue(ethPerPhnx, block.timestamp);
-        uint256 ethPerToken = _getAmounts(token);
-        emit AssetValue(ethPerToken, block.timestamp);
-        if (ethPerToken == 0 || ethPerPhnx == 0) return 0;
-        price = (ethPerToken.mul(1e18)).div(ethPerPhnx);
-        emit AssetValue(price, block.timestamp);
-        return price;
+        uint256 ethPerUSDT = _getAmounts(USDT);
+        console.log("ethPerUSDT");
+        console.log(ethPerUSDT);
+        emit AssetValue(ethPerUSDT, block.timestamp);
+        if(token == WETH) {
+            price = ethPerUSDT;
+            console.log("price");
+            console.log(price);
+            emit AssetValue(ethPerUSDT, block.timestamp);
+            emit AssetValue(price, block.timestamp);
+            return price;
+        }
+        else{
+            uint256 ethPerToken = _getAmounts(token);
+            emit AssetValue(ethPerToken, block.timestamp);
+            console.log("ethPerToken");
+            console.log(ethPerToken);
+            
+            if (ethPerToken == 0 || ethPerUSDT == 0) return 0;
+            
+            price = (ethPerUSDT.mul(1e18)).div(ethPerToken);
+            console.log("price");
+            console.log(price);
+            emit AssetValue(price, block.timestamp);
+            return price;
+
+        }
+        
     }
 
     // PHNXperETH

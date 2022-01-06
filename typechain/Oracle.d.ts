@@ -24,6 +24,7 @@ interface OracleInterface extends ethers.utils.Interface {
   functions: {
     "PHNX()": FunctionFragment;
     "UNISWAP_V2_FACTORY()": FunctionFragment;
+    "USDT()": FunctionFragment;
     "WETH()": FunctionFragment;
     "_calculate(uint256,uint256,uint32,address)": FunctionFragment;
     "cummulativeAveragePrice(address)": FunctionFragment;
@@ -42,6 +43,7 @@ interface OracleInterface extends ethers.utils.Interface {
     functionFragment: "UNISWAP_V2_FACTORY",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "USDT", values?: undefined): string;
   encodeFunctionData(functionFragment: "WETH", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "_calculate",
@@ -83,6 +85,7 @@ interface OracleInterface extends ethers.utils.Interface {
     functionFragment: "UNISWAP_V2_FACTORY",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "USDT", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "WETH", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "_calculate", data: BytesLike): Result;
   decodeFunctionResult(
@@ -144,6 +147,10 @@ export class Oracle extends Contract {
     UNISWAP_V2_FACTORY(overrides?: CallOverrides): Promise<[string]>;
 
     "UNISWAP_V2_FACTORY()"(overrides?: CallOverrides): Promise<[string]>;
+
+    USDT(overrides?: CallOverrides): Promise<[string]>;
+
+    "USDT()"(overrides?: CallOverrides): Promise<[string]>;
 
     WETH(overrides?: CallOverrides): Promise<[string]>;
 
@@ -255,6 +262,10 @@ export class Oracle extends Contract {
 
   "UNISWAP_V2_FACTORY()"(overrides?: CallOverrides): Promise<string>;
 
+  USDT(overrides?: CallOverrides): Promise<string>;
+
+  "USDT()"(overrides?: CallOverrides): Promise<string>;
+
   WETH(overrides?: CallOverrides): Promise<string>;
 
   "WETH()"(overrides?: CallOverrides): Promise<string>;
@@ -358,6 +369,10 @@ export class Oracle extends Contract {
     UNISWAP_V2_FACTORY(overrides?: CallOverrides): Promise<string>;
 
     "UNISWAP_V2_FACTORY()"(overrides?: CallOverrides): Promise<string>;
+
+    USDT(overrides?: CallOverrides): Promise<string>;
+
+    "USDT()"(overrides?: CallOverrides): Promise<string>;
 
     WETH(overrides?: CallOverrides): Promise<string>;
 
@@ -471,6 +486,10 @@ export class Oracle extends Contract {
 
     "UNISWAP_V2_FACTORY()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    USDT(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "USDT()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     WETH(overrides?: CallOverrides): Promise<BigNumber>;
 
     "WETH()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -579,6 +598,10 @@ export class Oracle extends Contract {
     "UNISWAP_V2_FACTORY()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    USDT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "USDT()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     WETH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
