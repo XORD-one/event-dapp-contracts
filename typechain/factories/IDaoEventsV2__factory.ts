@@ -238,6 +238,12 @@ const _abi = [
       },
       {
         indexed: false,
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        indexed: false,
         internalType: "bool",
         name: "isInCrypto",
         type: "bool",

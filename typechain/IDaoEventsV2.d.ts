@@ -21,7 +21,7 @@ interface IDaoEventsV2Interface extends ethers.utils.Interface {
   events: {
     "CreatedEvent(address,uint256,tuple)": EventFragment;
     "SoldTicketDetails1(tuple)": EventFragment;
-    "SoldTicketDetails2(tuple,address,bool)": EventFragment;
+    "SoldTicketDetails2(tuple,address,address,bool)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "CreatedEvent"): EventFragment;
@@ -58,6 +58,7 @@ export class IDaoEventsV2 extends Contract {
     SoldTicketDetails2(
       undefined: null,
       owner: null,
+      token: null,
       isInCrypto: null
     ): EventFilter;
   };

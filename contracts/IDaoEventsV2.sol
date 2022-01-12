@@ -55,5 +55,5 @@ interface IDaoEventsV2 {
 
     event CreatedEvent(address indexed owner, uint256 eventId, Event);
 
-    event SoldTicketDetails2(SoldTicketStruct, address owner,  bool isInCrypto);
+    event SoldTicketDetails2(SoldTicketStruct, address owner,   address token, bool isInCrypto);
 }

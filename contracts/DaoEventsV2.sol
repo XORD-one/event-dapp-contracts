@@ -254,6 +254,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
                 _event.categories[_buyTicket.categoryIndex]
             ),
             _event.owner,
+            token,
             _event.isInCrypto
         );
     }
