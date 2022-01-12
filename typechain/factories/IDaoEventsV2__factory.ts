@@ -51,7 +51,7 @@ const _abi = [
           },
           {
             internalType: "bool",
-            name: "isPHNX",
+            name: "isInCrypto",
             type: "bool",
           },
           {
@@ -235,6 +235,12 @@ const _abi = [
         internalType: "address",
         name: "owner",
         type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "bool",
+        name: "isInCrypto",
+        type: "bool",
       },
     ],
     name: "SoldTicketDetails2",

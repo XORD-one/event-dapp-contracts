@@ -666,14 +666,11 @@ contract Oracle is IOracle {
         else{
             uint256 ethPerToken = _getAmounts(token);
             emit AssetValue(ethPerToken, block.timestamp);
-            console.log("ethPerToken");
-            console.log(ethPerToken);
-            
+            console.log("ethPerToken:", ethPerToken);
             if (ethPerToken == 0 || ethPerUSDT == 0) return 0;
             
             price = (ethPerUSDT.mul(1e18)).div(ethPerToken);
-            console.log("price");
-            console.log(price);
+            console.log("price: ", price);
             emit AssetValue(price, block.timestamp);
             return price;
 

@@ -19,6 +19,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
     uint256 public eventIds;
     address public tokenAddress;
     IOracle public oracle;
+    address public multisigWallet = 0xFB5D2460F8701967073Ceb21fC98d891CE899902; // multisig for rinkeby & matic
     // address public USDT = 0x0cEbA92298b655C827D224D33461B4A1F9C418a6; // rinkeby new usdt
 
     // Mapping from owner to list of owned events IDs.
@@ -181,8 +182,8 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
             _phnxPrice = 0;
         } else {
             // event is paid
-            if(_event.isPHNX) {
-                require(_event.isPHNX, "Ticket payment has to be in PHNX");
+            if(_event.isInCrypto) {
+                require(_event.isInCrypto, "DaoEventsV2: Ticket payment has to be in fixed Crypto amount");
                 //event price is fixed in crypto means -> 2 means 2 phnx or 2 eth or 2 dai
                 _usdtPrice = 0;
                 _phnxPrice = _event.prices[_buyTicket.categoryIndex];
@@ -216,11 +217,11 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         _buyTicketInternal(_buyTicket, _event, _phnxPrice, _ticketId, token);
         uint percentToDeduct = 0;
         
+        //payment is in other than PHNX
         if(token != tokenAddress) {
-            //payment is in other than PHNX
             percentToDeduct = (_phnxPrice * 2000000000000000000)/100000000000000000000;
             //to change -> _event.owner with multisig wallet
-            sendAmount(_event.token, _event.owner, percentToDeduct, token);
+            sendAmount(_event.token, multisigWallet, percentToDeduct, token);
             console.log("percentToDeduct");
             console.log(percentToDeduct);
         }
@@ -252,7 +253,8 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
                 _categoryTktsSold,
                 _event.categories[_buyTicket.categoryIndex]
             ),
-            _event.owner
+            _event.owner,
+            _event.isInCrypto
         );
     }
 

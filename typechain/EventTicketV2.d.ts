@@ -127,7 +127,7 @@ interface EventTicketV2Interface extends ethers.utils.Interface {
     "ApprovalForAll(address,address,bool)": EventFragment;
     "CreatedEvent(address,uint256,tuple)": EventFragment;
     "SoldTicketDetails1(tuple)": EventFragment;
-    "SoldTicketDetails2(tuple,address)": EventFragment;
+    "SoldTicketDetails2(tuple,address,bool)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
@@ -675,7 +675,11 @@ export class EventTicketV2 extends Contract {
 
     SoldTicketDetails1(undefined: null): EventFilter;
 
-    SoldTicketDetails2(undefined: null, owner: null): EventFilter;
+    SoldTicketDetails2(
+      undefined: null,
+      owner: null,
+      isInCrypto: null
+    ): EventFilter;
 
     Transfer(
       from: string | null,

@@ -43,6 +43,7 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     "getTktQntySold(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "isWhiteListedToken(address)": FunctionFragment;
+    "multisigWallet()": FunctionFragment;
     "name()": FunctionFragment;
     "oracle()": FunctionFragment;
     "owner()": FunctionFragment;
@@ -90,7 +91,7 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isPHNX: boolean;
+        isInCrypto: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -161,6 +162,10 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "isWhiteListedToken",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "multisigWallet",
+    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "oracle", values?: undefined): string;
@@ -267,6 +272,10 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     functionFragment: "isWhiteListedToken",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "multisigWallet",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "oracle", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -315,7 +324,7 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     "CreatedEvent(address,uint256,tuple)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "SoldTicketDetails1(tuple)": EventFragment;
-    "SoldTicketDetails2(tuple,address)": EventFragment;
+    "SoldTicketDetails2(tuple,address,bool)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
@@ -406,7 +415,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isPHNX: boolean;
+        isInCrypto: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -430,7 +439,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isPHNX: boolean;
+        isInCrypto: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -485,7 +494,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isPHNX: boolean;
+        isInCrypto: boolean;
         owner: string;
         time: BigNumber;
         totalQuantity: BigNumber;
@@ -520,7 +529,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isPHNX: boolean;
+        isInCrypto: boolean;
         owner: string;
         time: BigNumber;
         totalQuantity: BigNumber;
@@ -679,6 +688,10 @@ export class DaoEventsV2 extends Contract {
       _token: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
+
+    multisigWallet(overrides?: CallOverrides): Promise<[string]>;
+
+    "multisigWallet()"(overrides?: CallOverrides): Promise<[string]>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
@@ -881,7 +894,7 @@ export class DaoEventsV2 extends Contract {
       oneTimeBuy: boolean;
       token: boolean;
       onsite: boolean;
-      isPHNX: boolean;
+      isInCrypto: boolean;
       owner: string;
       time: BigNumberish;
       totalQuantity: BigNumberish;
@@ -905,7 +918,7 @@ export class DaoEventsV2 extends Contract {
       oneTimeBuy: boolean;
       token: boolean;
       onsite: boolean;
-      isPHNX: boolean;
+      isInCrypto: boolean;
       owner: string;
       time: BigNumberish;
       totalQuantity: BigNumberish;
@@ -960,7 +973,7 @@ export class DaoEventsV2 extends Contract {
       oneTimeBuy: boolean;
       token: boolean;
       onsite: boolean;
-      isPHNX: boolean;
+      isInCrypto: boolean;
       owner: string;
       time: BigNumber;
       totalQuantity: BigNumber;
@@ -995,7 +1008,7 @@ export class DaoEventsV2 extends Contract {
       oneTimeBuy: boolean;
       token: boolean;
       onsite: boolean;
-      isPHNX: boolean;
+      isInCrypto: boolean;
       owner: string;
       time: BigNumber;
       totalQuantity: BigNumber;
@@ -1136,6 +1149,10 @@ export class DaoEventsV2 extends Contract {
     _token: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  multisigWallet(overrides?: CallOverrides): Promise<string>;
+
+  "multisigWallet()"(overrides?: CallOverrides): Promise<string>;
 
   name(overrides?: CallOverrides): Promise<string>;
 
@@ -1323,7 +1340,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isPHNX: boolean;
+        isInCrypto: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -1347,7 +1364,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isPHNX: boolean;
+        isInCrypto: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -1402,7 +1419,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isPHNX: boolean;
+        isInCrypto: boolean;
         owner: string;
         time: BigNumber;
         totalQuantity: BigNumber;
@@ -1437,7 +1454,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isPHNX: boolean;
+        isInCrypto: boolean;
         owner: string;
         time: BigNumber;
         totalQuantity: BigNumber;
@@ -1578,6 +1595,10 @@ export class DaoEventsV2 extends Contract {
       _token: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    multisigWallet(overrides?: CallOverrides): Promise<string>;
+
+    "multisigWallet()"(overrides?: CallOverrides): Promise<string>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -1730,7 +1751,11 @@ export class DaoEventsV2 extends Contract {
 
     SoldTicketDetails1(undefined: null): EventFilter;
 
-    SoldTicketDetails2(undefined: null, owner: null): EventFilter;
+    SoldTicketDetails2(
+      undefined: null,
+      owner: null,
+      isInCrypto: null
+    ): EventFilter;
 
     Transfer(
       from: string | null,
@@ -1798,7 +1823,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isPHNX: boolean;
+        isInCrypto: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -1822,7 +1847,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isPHNX: boolean;
+        isInCrypto: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -1973,6 +1998,10 @@ export class DaoEventsV2 extends Contract {
       _token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    multisigWallet(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "multisigWallet()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2176,7 +2205,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isPHNX: boolean;
+        isInCrypto: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -2200,7 +2229,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isPHNX: boolean;
+        isInCrypto: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -2360,6 +2389,12 @@ export class DaoEventsV2 extends Contract {
 
     "isWhiteListedToken(address)"(
       _token: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    multisigWallet(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "multisigWallet()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

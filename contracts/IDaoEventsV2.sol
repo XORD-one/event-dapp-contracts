@@ -17,7 +17,7 @@ interface IDaoEventsV2 {
         bool oneTimeBuy;
         bool token; // false means free
         bool onsite; // true means event is onsite
-        bool isPHNX;    //true means event ticket is in PHNX
+        bool isInCrypto;    //true means event ticket is in crypto amount. i.e. 2e18 mean 2 crypto not crypto of 2 dollars
         address owner;
         uint256 time;
         uint256 totalQuantity;
@@ -55,5 +55,5 @@ interface IDaoEventsV2 {
 
     event CreatedEvent(address indexed owner, uint256 eventId, Event);
 
-    event SoldTicketDetails2(SoldTicketStruct, address owner);
+    event SoldTicketDetails2(SoldTicketStruct, address owner,  bool isInCrypto);
 }
