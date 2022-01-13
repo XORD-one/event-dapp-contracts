@@ -22,7 +22,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface DaoEventsV2Interface extends ethers.utils.Interface {
   functions: {
-    "addtoWhiteList(address)": FunctionFragment;
+    "addtoWhiteList(tuple)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "buyTicket(tuple,address)": FunctionFragment;
@@ -41,8 +41,11 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     "getTicketOwner(address,uint256)": FunctionFragment;
     "getTktQnty(uint256)": FunctionFragment;
     "getTktQntySold(uint256)": FunctionFragment;
+    "getTokenByAddress(address)": FunctionFragment;
+    "getTokenByChainId(uint8)": FunctionFragment;
+    "getWhiteListedTokensList()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "isWhiteListedToken(address)": FunctionFragment;
+    "isWhiteListed(address)": FunctionFragment;
     "multisigWallet()": FunctionFragment;
     "name()": FunctionFragment;
     "oracle()": FunctionFragment;
@@ -58,14 +61,17 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     "ticketsOf(address)": FunctionFragment;
     "tokenAddress()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
+    "tokensLength()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "whiteListedToken(address)": FunctionFragment;
+    "whiteListedTokens(uint8)": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "addtoWhiteList",
-    values: [string]
+    values: [
+      { tokenAddress: string; chainId: BigNumberish; identifier: string }
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "approve",
@@ -156,11 +162,23 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getTokenByAddress",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTokenByChainId",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getWhiteListedTokensList",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "isWhiteListedToken",
+    functionFragment: "isWhiteListed",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -203,6 +221,10 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "tokensLength",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
   ): string;
@@ -211,8 +233,8 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "whiteListedToken",
-    values: [string]
+    functionFragment: "whiteListedTokens",
+    values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(
@@ -265,11 +287,23 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getTokenByAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTokenByChainId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getWhiteListedTokensList",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "isWhiteListedToken",
+    functionFragment: "isWhiteListed",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -306,6 +340,10 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "tokensLength",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
@@ -314,7 +352,7 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "whiteListedToken",
+    functionFragment: "whiteListedTokens",
     data: BytesLike
   ): Result;
 
@@ -352,12 +390,20 @@ export class DaoEventsV2 extends Contract {
 
   functions: {
     addtoWhiteList(
-      _token: string,
+      _tokenDetails: {
+        tokenAddress: string;
+        chainId: BigNumberish;
+        identifier: string;
+      },
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "addtoWhiteList(address)"(
-      _token: string,
+    "addtoWhiteList((address,uint8,string))"(
+      _tokenDetails: {
+        tokenAddress: string;
+        chainId: BigNumberish;
+        identifier: string;
+      },
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -667,6 +713,110 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
 
+    getTokenByAddress(
+      _token: string,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        [string, number, string] & {
+          tokenAddress: string;
+          chainId: number;
+          identifier: string;
+        },
+        number
+      ] & {
+        tokenDetails: [string, number, string] & {
+          tokenAddress: string;
+          chainId: number;
+          identifier: string;
+        };
+        index: number;
+      }
+    >;
+
+    "getTokenByAddress(address)"(
+      _token: string,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        [string, number, string] & {
+          tokenAddress: string;
+          chainId: number;
+          identifier: string;
+        },
+        number
+      ] & {
+        tokenDetails: [string, number, string] & {
+          tokenAddress: string;
+          chainId: number;
+          identifier: string;
+        };
+        index: number;
+      }
+    >;
+
+    getTokenByChainId(
+      _chainId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        [string, number, string] & {
+          tokenAddress: string;
+          chainId: number;
+          identifier: string;
+        }
+      ] & {
+        tokenDetails: [string, number, string] & {
+          tokenAddress: string;
+          chainId: number;
+          identifier: string;
+        };
+      }
+    >;
+
+    "getTokenByChainId(uint8)"(
+      _chainId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        [string, number, string] & {
+          tokenAddress: string;
+          chainId: number;
+          identifier: string;
+        }
+      ] & {
+        tokenDetails: [string, number, string] & {
+          tokenAddress: string;
+          chainId: number;
+          identifier: string;
+        };
+      }
+    >;
+
+    getWhiteListedTokensList(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        ([string, number, string] & {
+          tokenAddress: string;
+          chainId: number;
+          identifier: string;
+        })[]
+      ]
+    >;
+
+    "getWhiteListedTokensList()"(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        ([string, number, string] & {
+          tokenAddress: string;
+          chainId: number;
+          identifier: string;
+        })[]
+      ]
+    >;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -679,13 +829,13 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    isWhiteListedToken(
-      _token: string,
+    isWhiteListed(
+      _tokenAddress: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    "isWhiteListedToken(address)"(
-      _token: string,
+    "isWhiteListed(address)"(
+      _tokenAddress: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -795,6 +945,10 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    tokensLength(overrides?: CallOverrides): Promise<[number]>;
+
+    "tokensLength()"(overrides?: CallOverrides): Promise<[number]>;
+
     transferFrom(
       from: string,
       to: string,
@@ -819,24 +973,44 @@ export class DaoEventsV2 extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    whiteListedToken(
-      arg0: string,
+    whiteListedTokens(
+      arg0: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    ): Promise<
+      [string, number, string] & {
+        tokenAddress: string;
+        chainId: number;
+        identifier: string;
+      }
+    >;
 
-    "whiteListedToken(address)"(
-      arg0: string,
+    "whiteListedTokens(uint8)"(
+      arg0: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    ): Promise<
+      [string, number, string] & {
+        tokenAddress: string;
+        chainId: number;
+        identifier: string;
+      }
+    >;
   };
 
   addtoWhiteList(
-    _token: string,
+    _tokenDetails: {
+      tokenAddress: string;
+      chainId: BigNumberish;
+      identifier: string;
+    },
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "addtoWhiteList(address)"(
-    _token: string,
+  "addtoWhiteList((address,uint8,string))"(
+    _tokenDetails: {
+      tokenAddress: string;
+      chainId: BigNumberish;
+      identifier: string;
+    },
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1128,6 +1302,90 @@ export class DaoEventsV2 extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
+  getTokenByAddress(
+    _token: string,
+    overrides?: CallOverrides
+  ): Promise<
+    [
+      [string, number, string] & {
+        tokenAddress: string;
+        chainId: number;
+        identifier: string;
+      },
+      number
+    ] & {
+      tokenDetails: [string, number, string] & {
+        tokenAddress: string;
+        chainId: number;
+        identifier: string;
+      };
+      index: number;
+    }
+  >;
+
+  "getTokenByAddress(address)"(
+    _token: string,
+    overrides?: CallOverrides
+  ): Promise<
+    [
+      [string, number, string] & {
+        tokenAddress: string;
+        chainId: number;
+        identifier: string;
+      },
+      number
+    ] & {
+      tokenDetails: [string, number, string] & {
+        tokenAddress: string;
+        chainId: number;
+        identifier: string;
+      };
+      index: number;
+    }
+  >;
+
+  getTokenByChainId(
+    _chainId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [string, number, string] & {
+      tokenAddress: string;
+      chainId: number;
+      identifier: string;
+    }
+  >;
+
+  "getTokenByChainId(uint8)"(
+    _chainId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [string, number, string] & {
+      tokenAddress: string;
+      chainId: number;
+      identifier: string;
+    }
+  >;
+
+  getWhiteListedTokensList(
+    overrides?: CallOverrides
+  ): Promise<
+    ([string, number, string] & {
+      tokenAddress: string;
+      chainId: number;
+      identifier: string;
+    })[]
+  >;
+
+  "getWhiteListedTokensList()"(
+    overrides?: CallOverrides
+  ): Promise<
+    ([string, number, string] & {
+      tokenAddress: string;
+      chainId: number;
+      identifier: string;
+    })[]
+  >;
+
   isApprovedForAll(
     owner: string,
     operator: string,
@@ -1140,13 +1398,13 @@ export class DaoEventsV2 extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  isWhiteListedToken(
-    _token: string,
+  isWhiteListed(
+    _tokenAddress: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  "isWhiteListedToken(address)"(
-    _token: string,
+  "isWhiteListed(address)"(
+    _tokenAddress: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -1250,6 +1508,10 @@ export class DaoEventsV2 extends Contract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  tokensLength(overrides?: CallOverrides): Promise<number>;
+
+  "tokensLength()"(overrides?: CallOverrides): Promise<number>;
+
   transferFrom(
     from: string,
     to: string,
@@ -1274,18 +1536,44 @@ export class DaoEventsV2 extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  whiteListedToken(arg0: string, overrides?: CallOverrides): Promise<boolean>;
-
-  "whiteListedToken(address)"(
-    arg0: string,
+  whiteListedTokens(
+    arg0: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<boolean>;
+  ): Promise<
+    [string, number, string] & {
+      tokenAddress: string;
+      chainId: number;
+      identifier: string;
+    }
+  >;
+
+  "whiteListedTokens(uint8)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [string, number, string] & {
+      tokenAddress: string;
+      chainId: number;
+      identifier: string;
+    }
+  >;
 
   callStatic: {
-    addtoWhiteList(_token: string, overrides?: CallOverrides): Promise<void>;
+    addtoWhiteList(
+      _tokenDetails: {
+        tokenAddress: string;
+        chainId: BigNumberish;
+        identifier: string;
+      },
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    "addtoWhiteList(address)"(
-      _token: string,
+    "addtoWhiteList((address,uint8,string))"(
+      _tokenDetails: {
+        tokenAddress: string;
+        chainId: BigNumberish;
+        identifier: string;
+      },
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1574,6 +1862,90 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
+    getTokenByAddress(
+      _token: string,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        [string, number, string] & {
+          tokenAddress: string;
+          chainId: number;
+          identifier: string;
+        },
+        number
+      ] & {
+        tokenDetails: [string, number, string] & {
+          tokenAddress: string;
+          chainId: number;
+          identifier: string;
+        };
+        index: number;
+      }
+    >;
+
+    "getTokenByAddress(address)"(
+      _token: string,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        [string, number, string] & {
+          tokenAddress: string;
+          chainId: number;
+          identifier: string;
+        },
+        number
+      ] & {
+        tokenDetails: [string, number, string] & {
+          tokenAddress: string;
+          chainId: number;
+          identifier: string;
+        };
+        index: number;
+      }
+    >;
+
+    getTokenByChainId(
+      _chainId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, number, string] & {
+        tokenAddress: string;
+        chainId: number;
+        identifier: string;
+      }
+    >;
+
+    "getTokenByChainId(uint8)"(
+      _chainId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, number, string] & {
+        tokenAddress: string;
+        chainId: number;
+        identifier: string;
+      }
+    >;
+
+    getWhiteListedTokensList(
+      overrides?: CallOverrides
+    ): Promise<
+      ([string, number, string] & {
+        tokenAddress: string;
+        chainId: number;
+        identifier: string;
+      })[]
+    >;
+
+    "getWhiteListedTokensList()"(
+      overrides?: CallOverrides
+    ): Promise<
+      ([string, number, string] & {
+        tokenAddress: string;
+        chainId: number;
+        identifier: string;
+      })[]
+    >;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -1586,13 +1958,13 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    isWhiteListedToken(
-      _token: string,
+    isWhiteListed(
+      _tokenAddress: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "isWhiteListedToken(address)"(
-      _token: string,
+    "isWhiteListed(address)"(
+      _tokenAddress: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -1693,6 +2065,10 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    tokensLength(overrides?: CallOverrides): Promise<number>;
+
+    "tokensLength()"(overrides?: CallOverrides): Promise<number>;
+
     transferFrom(
       from: string,
       to: string,
@@ -1717,12 +2093,27 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    whiteListedToken(arg0: string, overrides?: CallOverrides): Promise<boolean>;
-
-    "whiteListedToken(address)"(
-      arg0: string,
+    whiteListedTokens(
+      arg0: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<
+      [string, number, string] & {
+        tokenAddress: string;
+        chainId: number;
+        identifier: string;
+      }
+    >;
+
+    "whiteListedTokens(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, number, string] & {
+        tokenAddress: string;
+        chainId: number;
+        identifier: string;
+      }
+    >;
   };
 
   filters: {
@@ -1766,10 +2157,21 @@ export class DaoEventsV2 extends Contract {
   };
 
   estimateGas: {
-    addtoWhiteList(_token: string, overrides?: Overrides): Promise<BigNumber>;
+    addtoWhiteList(
+      _tokenDetails: {
+        tokenAddress: string;
+        chainId: BigNumberish;
+        identifier: string;
+      },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    "addtoWhiteList(address)"(
-      _token: string,
+    "addtoWhiteList((address,uint8,string))"(
+      _tokenDetails: {
+        tokenAddress: string;
+        chainId: BigNumberish;
+        identifier: string;
+      },
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1978,6 +2380,30 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getTokenByAddress(
+      _token: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getTokenByAddress(address)"(
+      _token: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getTokenByChainId(
+      _chainId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getTokenByChainId(uint8)"(
+      _chainId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getWhiteListedTokensList(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getWhiteListedTokensList()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -1990,13 +2416,13 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    isWhiteListedToken(
-      _token: string,
+    isWhiteListed(
+      _tokenAddress: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "isWhiteListedToken(address)"(
-      _token: string,
+    "isWhiteListed(address)"(
+      _tokenAddress: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2103,6 +2529,10 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    tokensLength(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "tokensLength()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     transferFrom(
       from: string,
       to: string,
@@ -2127,25 +2557,33 @@ export class DaoEventsV2 extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    whiteListedToken(
-      arg0: string,
+    whiteListedTokens(
+      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "whiteListedToken(address)"(
-      arg0: string,
+    "whiteListedTokens(uint8)"(
+      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     addtoWhiteList(
-      _token: string,
+      _tokenDetails: {
+        tokenAddress: string;
+        chainId: BigNumberish;
+        identifier: string;
+      },
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "addtoWhiteList(address)"(
-      _token: string,
+    "addtoWhiteList((address,uint8,string))"(
+      _tokenDetails: {
+        tokenAddress: string;
+        chainId: BigNumberish;
+        identifier: string;
+      },
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -2371,6 +2809,34 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getTokenByAddress(
+      _token: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getTokenByAddress(address)"(
+      _token: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getTokenByChainId(
+      _chainId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getTokenByChainId(uint8)"(
+      _chainId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getWhiteListedTokensList(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getWhiteListedTokensList()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -2383,13 +2849,13 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    isWhiteListedToken(
-      _token: string,
+    isWhiteListed(
+      _tokenAddress: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "isWhiteListedToken(address)"(
-      _token: string,
+    "isWhiteListed(address)"(
+      _tokenAddress: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2504,6 +2970,10 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    tokensLength(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "tokensLength()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     transferFrom(
       from: string,
       to: string,
@@ -2528,13 +2998,13 @@ export class DaoEventsV2 extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    whiteListedToken(
-      arg0: string,
+    whiteListedTokens(
+      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "whiteListedToken(address)"(
-      arg0: string,
+    "whiteListedTokens(uint8)"(
+      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

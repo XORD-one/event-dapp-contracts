@@ -10,6 +10,11 @@ interface IDaoEventsV2 {
         string boughtLocation;
         string eventLocation;
     }
+    struct WhiteListedToken {
+        address tokenAddress;
+        uint8 chainId;
+        string identifier;
+    }
 
     event SoldTicketDetails1(Ticket);
 

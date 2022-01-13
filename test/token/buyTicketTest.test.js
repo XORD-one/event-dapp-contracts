@@ -103,11 +103,28 @@ const printConsoles = (receipt, name) => {
 
     it('it should deploy Events Dapp mainnet', async function () {
         DaoEvents = await ethers.getContractFactory("DaoEventsV2");
-        daoEventsV2 = await DaoEvents.deploy(mainnetAddresses.PHNX, mainnetAddresses.NEW_ORACLE);
+        daoEventsV2 = await DaoEvents.connect(deployer).deploy(mainnetAddresses.PHNX, mainnetAddresses.NEW_ORACLE);
         console.log("daoEvents.address");
         console.log(daoEventsV2.address);
         mainnetAddresses.DAO = daoEventsV2.address;
     })
+    it('it should add token to whitelist', async function() {
+        let result = await daoEventsV2.connect(deployer).addtoWhiteList(["0x0cEbA92298b655C827D224D33461B4A1F9C418a6","1","Tether"]);
+        console.log("buy ticket response");
+        console.log(result);
+    })
+    it("it should tell if token is whitelisted or not", async function() {
+        let result = await daoEventsV2.isWhiteListed("0x0cEbA92298b655C827D224D33461B4A1F9C418a6");
+        console.log("isTokenWhitelisted response");
+        console.log(result);
+    })
+    it('it should give whitelist tokens address', async function () {
+        let result = await daoEventsV2.connect(deployer).getWhiteListedTokensList();
+        console.log("get whitelist response");
+        console.log(result);
+        console.log("-------------------");
+    })
+
 
     xit('it should give the 1MATIC to USDT amount', async function() {
         let PHNXPrice = await OracleInstance.fetch(mainnetAddresses.MATIC);
@@ -159,7 +176,7 @@ const printConsoles = (receipt, name) => {
         let receipt = await PHNXPrice.wait();
         printConsoles(receipt, "LRC");
     })
-    it('it should give the 1WETH to USDT amount', async function() {
+    xit('it should give the 1WETH to USDT amount', async function() {
         let PHNXPrice = await OracleInstance.fetch(mainnetAddresses.WETH);
         let receipt = await PHNXPrice.wait();
         printConsoles(receipt, "WETH");
@@ -169,7 +186,7 @@ const printConsoles = (receipt, name) => {
         let receipt = await PHNXPrice.wait();
         printConsoles(receipt, "ZRX");
     })
-    it('it should create Event', async function() {
+    xit('it should create Event', async function() {
         let result = await daoEventsV2.connect(maker).createEvent(createEventStruct);
         console.log("create event response");
 
@@ -185,13 +202,12 @@ const printConsoles = (receipt, name) => {
         console.log(eventObj);
         console.log(desiredEvent.eventId.toNumber()); 
     } )
-
-    it('it should purchase event ticket', async function() {
+    xit('it should purchase event ticket', async function() {
         let result = await daoEventsV2.connect(taker).buyTicket(buyTicketStruct, mainnetAddresses.DAI);
         console.log("buy ticket response");
         console.log(result);
     })
-    it('it should tell if token is accepted', async function() {
+    xit('it should tell if token is accepted', async function() {
         let daiResult = await daoEventsV2.connect(taker).isWhiteListedToken(mainnetAddresses.DAI);
         let wethResult = await daoEventsV2.connect(taker).isWhiteListedToken(mainnetAddresses.WETH);
         console.log(daiResult, wethResult);

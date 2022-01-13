@@ -17,6 +17,7 @@ interface IERC20 {
 
 contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
     uint256 public eventIds;
+    uint8 public tokensLength;  // 0 means not found
     address public tokenAddress;
     IOracle public oracle;
     address public multisigWallet = 0xFB5D2460F8701967073Ceb21fC98d891CE899902; // multisig for rinkeby & matic
@@ -29,7 +30,11 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
     // Mapping from eventId to Event struct
     mapping(uint256 => Event) public events;
     // Mapping from tokenAddres to isAccepted
-    mapping(address => bool) public whiteListedToken;
+    // mapping(address => bool) public whiteListedTokens;
+
+    // Mapping from tokenAddres to isAccepted
+    mapping(uint8 => WhiteListedToken) public whiteListedTokens;
+
     // Mapping from address to eventId to boughOrNot
     mapping(address => mapping(uint256 => bool)) ticketBought;
 
@@ -38,11 +43,17 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         tokenAddress = _token;
         oracle = IOracle(_oracle);
         // addtoWhiteList(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);  //weth mainnet
-        addtoWhiteList(0x0cEbA92298b655C827D224D33461B4A1F9C418a6); //rinkeby new usdt
-        addtoWhiteList(0xc778417E063141139Fce010982780140Aa0cD5Ab); //weth
-        addtoWhiteList(0x521855AA99a80Cb467A12b1881f05CF9440c7023); //phnx
-        addtoWhiteList(0xeb8f08a975Ab53E34D8a0330E0D34de942C95926); //usdc
-        addtoWhiteList(0x83e556Da6514325eE615FF868cd0d324856fa0Cf); //matic
+
+        // addtoWhiteList(0x0cEbA92298b655C827D224D33461B4A1F9C418a6); //rinkeby new usdt
+        // addtoWhiteList(0xc778417E063141139Fce010982780140Aa0cD5Ab); //weth
+        // addtoWhiteList(0x521855AA99a80Cb467A12b1881f05CF9440c7023); //phnx
+        // addtoWhiteList(0xeb8f08a975Ab53E34D8a0330E0D34de942C95926); //usdc
+        // addtoWhiteList(0x83e556Da6514325eE615FF868cd0d324856fa0Cf); //matic
+
+        addtoWhiteList(WhiteListedToken({tokenAddress:0x0cEbA92298b655C827D224D33461B4A1F9C418a6,chainId:1,identifier:"Tether"})); //rinkeby new usdt
+        addtoWhiteList(WhiteListedToken({tokenAddress:0xc778417E063141139Fce010982780140Aa0cD5Ab,chainId:1,identifier:"weth"})); //weth
+        addtoWhiteList(WhiteListedToken({tokenAddress:0x521855AA99a80Cb467A12b1881f05CF9440c7023,chainId:1,identifier:"phoenixdao"})); //phnx
+        addtoWhiteList(WhiteListedToken({tokenAddress:0xeb8f08a975Ab53E34D8a0330E0D34de942C95926,chainId:1,identifier:"usd-coin"})); //usdc
     }
 
     modifier goodTime(uint256 _time) {
@@ -108,12 +119,65 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         tokenAddress = _token;
     }
 
-    function addtoWhiteList(address _token) public onlyOwner() {
-        whiteListedToken[_token] = true;
+    function addtoWhiteList(WhiteListedToken memory _tokenDetails)
+        public 
+        onlyOwner() 
+    {
+        (WhiteListedToken memory tokenDetails, uint8 index) = getTokenByAddress(_tokenDetails.tokenAddress);
+        if(tokenDetails.tokenAddress == address(0)) {
+            tokensLength += 1;
+            whiteListedTokens[tokensLength] = _tokenDetails;
+        }
+        else whiteListedTokens[index] = _tokenDetails;
+    }
+    //function to check if token is whiteListed or not 
+    function isWhiteListed(address _tokenAddress) 
+        public 
+        view 
+        returns (bool) 
+    {
+        (WhiteListedToken memory tokenDetails, ) = getTokenByAddress(_tokenAddress);
+        return tokenDetails.tokenAddress != address(0);
     }
 
-    function isWhiteListedToken (address _token) public view returns (bool) {
-        return whiteListedToken[_token];
+    function getTokenByAddress(address _token) 
+        public 
+        view 
+        returns (WhiteListedToken memory tokenDetails, uint8 index) 
+    {
+            require(_token != address(0), "Invalid token address.");
+            for(uint8 i = 1; i < tokensLength + 1 ; i++) {
+                if(whiteListedTokens[i].tokenAddress == _token) {
+                    return (whiteListedTokens[i], i);
+                }
+            }
+    }
+
+    function getTokenByChainId(uint8 _chainId) 
+        external 
+        view 
+        returns (WhiteListedToken memory tokenDetails) 
+    {
+            // return whiteListedTokens[_token];
+            for(uint8 i = 1; i < tokensLength + 1; i++) {
+                if(whiteListedTokens[i].chainId == _chainId) {
+                    return whiteListedTokens[i];
+                }
+            }
+    }
+
+    function getWhiteListedTokensList () 
+        external 
+        view 
+        returns (WhiteListedToken [] memory) 
+    {
+        WhiteListedToken [] memory _whiteListedTokensList = new WhiteListedToken[](tokensLength);
+        console.log("tokensLength",tokensLength);
+        //loop over whiteList and add to array
+        for (uint8 i = 1; i < tokensLength + 1; i++) {
+            _whiteListedTokensList[i-1] = whiteListedTokens[i];
+        }
+        return _whiteListedTokensList;
     }
 
     function createEvent(Event memory _event) public goodTime(_event.time) {
@@ -167,11 +231,16 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         eventExist(_buyTicket.eventId)
         goodTime(events[_buyTicket.eventId].time)
     {
-        require(isWhiteListedToken(token),"DaoEvents: Token is not accepted");
+        //require check for isWhiteListed
+        require(isWhiteListed(token), "DaoEvents: Token is not accepted");
+
+        uint256 ticketCategoryIndex = _buyTicket.categoryIndex;
+        uint256 _eventId = _buyTicket.eventId;
+        // string memory _boughtLocation = _buyTicket.boughtLocation;
         // increment ticketId
         ticketIds++;
 
-        Event memory _event = events[_buyTicket.eventId];
+        Event memory _event = events[_eventId];
 
         uint256 _usdtPrice;
         uint256 _phnxPrice;
@@ -186,20 +255,20 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
                 require(_event.isInCrypto, "DaoEventsV2: Ticket payment has to be in fixed Crypto amount");
                 //event price is fixed in crypto means -> 2 means 2 phnx or 2 eth or 2 dai
                 _usdtPrice = 0;
-                _phnxPrice = _event.prices[_buyTicket.categoryIndex];
+                _phnxPrice = _event.prices[ticketCategoryIndex];
             } else {
                 //event price is in usdt
-                _usdtPrice = _event.prices[_buyTicket.categoryIndex];
+                _usdtPrice = _event.prices[ticketCategoryIndex];
                 _phnxPrice = (_usdtPrice * oracle.fetch(token)) / 1e18;
             }
         }
 
         uint256 _ticketId = ticketIds;
 
-        if (_event.ticketLimited[_buyTicket.categoryIndex]) {
+        if (_event.ticketLimited[ticketCategoryIndex]) {
             require(
                 _event.totalQuantity > _event.totalQntySold &&
-                    _event.tktQnty[_buyTicket.categoryIndex] >
+                    _event.tktQnty[ticketCategoryIndex] >
                     _event.totalQntySold,
                 "ticket quantity exceeded"
             );
@@ -207,10 +276,10 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
 
         if (_event.oneTimeBuy) {
             require(
-                !ticketBought[_msgSender()][_buyTicket.eventId],
+                !ticketBought[_msgSender()][_eventId],
                 "ticket to be bought only one time"
             );
-            ticketBought[_msgSender()][_buyTicket.eventId] = true;
+            ticketBought[_msgSender()][_eventId] = true;
         }
 
 
@@ -227,13 +296,13 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         }
 
 
-        uint256 _totalQuantitySold = events[_buyTicket.eventId].totalQntySold;
+        uint256 _totalQuantitySold = events[_eventId].totalQntySold;
         uint256 _categoryTktsSold =
-            events[_buyTicket.eventId].tktQntySold[_buyTicket.categoryIndex];
+            events[_eventId].tktQntySold[ticketCategoryIndex];
 
         emit SoldTicketDetails1(
             Ticket(
-                _buyTicket.eventId,
+                _eventId,
                 _ticketId,
                 _buyTicket.boughtLocation,
                 _event.location
@@ -243,7 +312,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         emit SoldTicketDetails2(
             SoldTicketStruct(
                 _event.token,
-                _buyTicket.eventId,
+                _eventId,
                 _ticketId,
                 _msgSender(),
                 _usdtPrice,
@@ -251,7 +320,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
                 block.timestamp,
                 _totalQuantitySold,
                 _categoryTktsSold,
-                _event.categories[_buyTicket.categoryIndex]
+                _event.categories[ticketCategoryIndex]
             ),
             _event.owner,
             token,
