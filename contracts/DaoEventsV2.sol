@@ -132,7 +132,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
     }
     //function to check if token is whiteListed or not 
     function isWhiteListed(address _tokenAddress) 
-        public 
+        internal 
         view 
         returns (bool) 
     {
@@ -178,6 +178,13 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
             _whiteListedTokensList[i-1] = whiteListedTokens[i];
         }
         return _whiteListedTokensList;
+    }
+    function updateMsgValue (uint256 phnxPrice, uint256 msgAmount) internal pure returns (uint256, uint256) {
+        require(msgAmount > phnxPrice, "DaoEventsV2: Ticket price is not matching");
+        uint32 difference = uint32(msgAmount - phnxPrice);
+        phnxPrice = msgAmount - difference;
+        msgAmount -= phnxPrice;
+        return (phnxPrice, msgAmount);
     }
 
     function createEvent(Event memory _event) public goodTime(_event.time) {
@@ -228,6 +235,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
 
     function buyTicket(BuyTicket memory _buyTicket, address token)
         public
+        payable
         eventExist(_buyTicket.eventId)
         goodTime(events[_buyTicket.eventId].time)
     {
@@ -236,6 +244,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
 
         uint256 ticketCategoryIndex = _buyTicket.categoryIndex;
         uint256 _eventId = _buyTicket.eventId;
+        uint256 msgAmount = msg.value;
         // string memory _boughtLocation = _buyTicket.boughtLocation;
         // increment ticketId
         ticketIds++;
@@ -250,16 +259,37 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
             _usdtPrice = 0;
             _phnxPrice = 0;
         } else {
-            // event is paid
-            if(_event.isInCrypto) {
-                require(_event.isInCrypto, "DaoEventsV2: Ticket payment has to be in fixed Crypto amount");
+            if(_event.isPHNX) {
                 //event price is fixed in crypto means -> 2 means 2 phnx or 2 eth or 2 dai
                 _usdtPrice = 0;
                 _phnxPrice = _event.prices[ticketCategoryIndex];
+                if(token == address(0) && msgAmount > 0) {
+                    // require(msgAmount > _phnxPrice, "DaoEventsV2: Ticket price is not matching");
+                    // uint32 difference = uint32(msgAmount - _phnxPrice);
+                    // _phnxPrice = msgAmount - difference;
+                    // msgAmount -= _phnxPrice;
+                    (_phnxPrice, msgAmount) = updateMsgValue(_phnxPrice, msgAmount);
+                    console.log("msgAmount",msgAmount);
+                    console.log("_phnxPrice",_phnxPrice);
+                    
+
+
+                }
+
             } else {
                 //event price is in usdt
                 _usdtPrice = _event.prices[ticketCategoryIndex];
                 _phnxPrice = (_usdtPrice * oracle.fetch(token)) / 1e18;
+                if(token == address(0) && msgAmount > 0) {
+                    // require(msgAmount > _phnxPrice, "DaoEventsV2: Ticket price is not matching");
+                    // uint difference =uint32( msgAmount - _phnxPrice);
+                    // _phnxPrice = msgAmount - difference;
+                    // msgAmount -= _phnxPrice;
+                    (_phnxPrice, msgAmount) = updateMsgValue(_phnxPrice, msgAmount);
+                    console.log("msgAmount",msgAmount);
+                    console.log("_phnxPrice",_phnxPrice);
+
+                }
             }
         }
 
@@ -289,14 +319,16 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         //payment is in other than PHNX
         if(token != tokenAddress) {
             percentToDeduct = (_phnxPrice * 2000000000000000000)/100000000000000000000;
+            if(token == address(0) && msgAmount > 0) {
+                require(msgAmount >= percentToDeduct, "DaoEventsV2: Amount to be paid is inSufficient");
+                msgAmount -= percentToDeduct;
+            }
             //to change -> _event.owner with multisig wallet
             sendAmount(_event.token, multisigWallet, percentToDeduct, token);
-            console.log("percentToDeduct");
-            console.log(percentToDeduct);
         }
 
 
-        uint256 _totalQuantitySold = events[_eventId].totalQntySold;
+        // uint256 _totalQuantitySold = events[_eventId].totalQntySold;
         uint256 _categoryTktsSold =
             events[_eventId].tktQntySold[ticketCategoryIndex];
 
@@ -318,13 +350,13 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
                 _usdtPrice,
                 _phnxPrice,
                 block.timestamp,
-                _totalQuantitySold,
+                events[_eventId].totalQntySold,
                 _categoryTktsSold,
                 _event.categories[ticketCategoryIndex]
             ),
             _event.owner,
             token,
-            _event.isInCrypto
+            _event.isPHNX
         );
     }
 
@@ -380,8 +412,8 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         if(isPaid) {
             // event is paid
             //transfer the tokens to event owner
-            console.log("sending amount");
-            IERC20(_tokenAddress).transferFrom(_msgSender(), to, amount);
+            if(_tokenAddress == address(0)) payable(to).transfer(msg.value);   // payment in eth
+            else IERC20(_tokenAddress).transferFrom(_msgSender(), to, amount);  //payment in other than eth
         }
     }
 }

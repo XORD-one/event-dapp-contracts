@@ -59,7 +59,7 @@ export class IDaoEventsV2 extends Contract {
       undefined: null,
       owner: null,
       token: null,
-      isInCrypto: null
+      isPHNX: null
     ): EventFilter;
   };
 

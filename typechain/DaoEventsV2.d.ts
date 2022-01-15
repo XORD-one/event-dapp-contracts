@@ -14,6 +14,7 @@ import {
   Contract,
   ContractTransaction,
   Overrides,
+  PayableOverrides,
   CallOverrides,
 } from "@ethersproject/contracts";
 import { BytesLike } from "@ethersproject/bytes";
@@ -45,7 +46,6 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     "getTokenByChainId(uint8)": FunctionFragment;
     "getWhiteListedTokensList()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "isWhiteListed(address)": FunctionFragment;
     "multisigWallet()": FunctionFragment;
     "name()": FunctionFragment;
     "oracle()": FunctionFragment;
@@ -97,7 +97,7 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isInCrypto: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -176,10 +176,6 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isWhiteListed",
-    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "multisigWallet",
@@ -300,10 +296,6 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isWhiteListed",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -433,7 +425,7 @@ export class DaoEventsV2 extends Contract {
         boughtLocation: string;
       },
       token: string,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     "buyTicket((uint256,uint256,string),address)"(
@@ -443,7 +435,7 @@ export class DaoEventsV2 extends Contract {
         boughtLocation: string;
       },
       token: string,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     changeToken(
@@ -461,7 +453,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isInCrypto: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -485,7 +477,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isInCrypto: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -540,7 +532,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isInCrypto: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumber;
         totalQuantity: BigNumber;
@@ -575,7 +567,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isInCrypto: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumber;
         totalQuantity: BigNumber;
@@ -829,16 +821,6 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    isWhiteListed(
-      _tokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    "isWhiteListed(address)"(
-      _tokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
     multisigWallet(overrides?: CallOverrides): Promise<[string]>;
 
     "multisigWallet()"(overrides?: CallOverrides): Promise<[string]>;
@@ -1040,7 +1022,7 @@ export class DaoEventsV2 extends Contract {
       boughtLocation: string;
     },
     token: string,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   "buyTicket((uint256,uint256,string),address)"(
@@ -1050,7 +1032,7 @@ export class DaoEventsV2 extends Contract {
       boughtLocation: string;
     },
     token: string,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   changeToken(
@@ -1068,7 +1050,7 @@ export class DaoEventsV2 extends Contract {
       oneTimeBuy: boolean;
       token: boolean;
       onsite: boolean;
-      isInCrypto: boolean;
+      isPHNX: boolean;
       owner: string;
       time: BigNumberish;
       totalQuantity: BigNumberish;
@@ -1092,7 +1074,7 @@ export class DaoEventsV2 extends Contract {
       oneTimeBuy: boolean;
       token: boolean;
       onsite: boolean;
-      isInCrypto: boolean;
+      isPHNX: boolean;
       owner: string;
       time: BigNumberish;
       totalQuantity: BigNumberish;
@@ -1147,7 +1129,7 @@ export class DaoEventsV2 extends Contract {
       oneTimeBuy: boolean;
       token: boolean;
       onsite: boolean;
-      isInCrypto: boolean;
+      isPHNX: boolean;
       owner: string;
       time: BigNumber;
       totalQuantity: BigNumber;
@@ -1182,7 +1164,7 @@ export class DaoEventsV2 extends Contract {
       oneTimeBuy: boolean;
       token: boolean;
       onsite: boolean;
-      isInCrypto: boolean;
+      isPHNX: boolean;
       owner: string;
       time: BigNumber;
       totalQuantity: BigNumber;
@@ -1395,16 +1377,6 @@ export class DaoEventsV2 extends Contract {
   "isApprovedForAll(address,address)"(
     owner: string,
     operator: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  isWhiteListed(
-    _tokenAddress: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  "isWhiteListed(address)"(
-    _tokenAddress: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -1628,7 +1600,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isInCrypto: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -1652,7 +1624,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isInCrypto: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -1707,7 +1679,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isInCrypto: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumber;
         totalQuantity: BigNumber;
@@ -1742,7 +1714,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isInCrypto: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumber;
         totalQuantity: BigNumber;
@@ -1958,16 +1930,6 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    isWhiteListed(
-      _tokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    "isWhiteListed(address)"(
-      _tokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     multisigWallet(overrides?: CallOverrides): Promise<string>;
 
     "multisigWallet()"(overrides?: CallOverrides): Promise<string>;
@@ -2146,7 +2108,7 @@ export class DaoEventsV2 extends Contract {
       undefined: null,
       owner: null,
       token: null,
-      isInCrypto: null
+      isPHNX: null
     ): EventFilter;
 
     Transfer(
@@ -2201,7 +2163,7 @@ export class DaoEventsV2 extends Contract {
         boughtLocation: string;
       },
       token: string,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     "buyTicket((uint256,uint256,string),address)"(
@@ -2211,7 +2173,7 @@ export class DaoEventsV2 extends Contract {
         boughtLocation: string;
       },
       token: string,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     changeToken(_token: string, overrides?: Overrides): Promise<BigNumber>;
@@ -2226,7 +2188,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isInCrypto: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -2250,7 +2212,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isInCrypto: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -2413,16 +2375,6 @@ export class DaoEventsV2 extends Contract {
     "isApprovedForAll(address,address)"(
       owner: string,
       operator: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    isWhiteListed(
-      _tokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "isWhiteListed(address)"(
-      _tokenAddress: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2616,7 +2568,7 @@ export class DaoEventsV2 extends Contract {
         boughtLocation: string;
       },
       token: string,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     "buyTicket((uint256,uint256,string),address)"(
@@ -2626,7 +2578,7 @@ export class DaoEventsV2 extends Contract {
         boughtLocation: string;
       },
       token: string,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     changeToken(
@@ -2644,7 +2596,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isInCrypto: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -2668,7 +2620,7 @@ export class DaoEventsV2 extends Contract {
         oneTimeBuy: boolean;
         token: boolean;
         onsite: boolean;
-        isInCrypto: boolean;
+        isPHNX: boolean;
         owner: string;
         time: BigNumberish;
         totalQuantity: BigNumberish;
@@ -2846,16 +2798,6 @@ export class DaoEventsV2 extends Contract {
     "isApprovedForAll(address,address)"(
       owner: string,
       operator: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    isWhiteListed(
-      _tokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "isWhiteListed(address)"(
-      _tokenAddress: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
