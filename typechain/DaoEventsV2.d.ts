@@ -64,6 +64,7 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     "tokensLength()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "weth()": FunctionFragment;
     "whiteListedTokens(uint8)": FunctionFragment;
   };
 
@@ -228,6 +229,7 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "weth", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "whiteListedTokens",
     values: [BigNumberish]
@@ -343,6 +345,7 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "weth", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "whiteListedTokens",
     data: BytesLike
@@ -955,6 +958,10 @@ export class DaoEventsV2 extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    weth(overrides?: CallOverrides): Promise<[string]>;
+
+    "weth()"(overrides?: CallOverrides): Promise<[string]>;
+
     whiteListedTokens(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -1508,6 +1515,10 @@ export class DaoEventsV2 extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  weth(overrides?: CallOverrides): Promise<string>;
+
+  "weth()"(overrides?: CallOverrides): Promise<string>;
+
   whiteListedTokens(
     arg0: BigNumberish,
     overrides?: CallOverrides
@@ -2055,6 +2066,10 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    weth(overrides?: CallOverrides): Promise<string>;
+
+    "weth()"(overrides?: CallOverrides): Promise<string>;
+
     whiteListedTokens(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -2509,6 +2524,10 @@ export class DaoEventsV2 extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    weth(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "weth()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     whiteListedTokens(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -2939,6 +2958,10 @@ export class DaoEventsV2 extends Contract {
       newOwner: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
+
+    weth(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "weth()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     whiteListedTokens(
       arg0: BigNumberish,
