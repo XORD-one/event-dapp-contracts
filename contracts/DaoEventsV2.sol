@@ -119,6 +119,9 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
     function changeToken(address _token) public onlyOwner() {
         tokenAddress = _token;
     }
+    function getContractBalance() external view returns (uint256) {
+        return address(this).balance;
+    }
 
     function addtoWhiteList(WhiteListedToken memory _tokenDetails)
         public 
@@ -404,7 +407,10 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
                 console.log("msg.value",msg.value);
                 console.log("amount",amount);
                 require(msg.value >= amount, "DaoEventsV2: Amount to be paid is inSufficient");
-                payable(to).transfer(amount);   // payment in eth
+
+                console.log("contract balance",address(this).balance);
+                (bool sent,) = to.call{value: amount}(""); // payment in eth
+                require(sent, "Failed to send Ether");
             } 
             else IERC20(_tokenAddress).transferFrom(_msgSender(), to, amount);  //payment in other than eth
         }

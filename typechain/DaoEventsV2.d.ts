@@ -35,6 +35,7 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
     "eventsOf(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getCategories(uint256)": FunctionFragment;
+    "getContractBalance()": FunctionFragment;
     "getEventsCount()": FunctionFragment;
     "getPrices(uint256)": FunctionFragment;
     "getTicket(uint256)": FunctionFragment;
@@ -133,6 +134,10 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getCategories",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getContractBalance",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getEventsCount",
@@ -263,6 +268,10 @@ interface DaoEventsV2Interface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getCategories",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getContractBalance",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -609,6 +618,10 @@ export class DaoEventsV2 extends Contract {
       _eventId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string[]]>;
+
+    getContractBalance(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "getContractBalance()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getEventsCount(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -1211,6 +1224,10 @@ export class DaoEventsV2 extends Contract {
     overrides?: CallOverrides
   ): Promise<string[]>;
 
+  getContractBalance(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "getContractBalance()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   getEventsCount(overrides?: CallOverrides): Promise<BigNumber>;
 
   "getEventsCount()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1765,6 +1782,10 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<string[]>;
 
+    getContractBalance(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getContractBalance()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getEventsCount(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getEventsCount()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2294,6 +2315,10 @@ export class DaoEventsV2 extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getContractBalance(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getContractBalance()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getEventsCount(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getEventsCount()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2709,6 +2734,14 @@ export class DaoEventsV2 extends Contract {
 
     "getCategories(uint256)"(
       _eventId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getContractBalance(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getContractBalance()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
