@@ -18,6 +18,13 @@ let mainnetAddresses = {
     LRC:    "0xbbbbca6a901c926f240b89eacb641d8aec7aeafd",
     ZRX:    "0xe41d2489571d322189246dafa5ebde1f4699f498",
     ZERO:   "0x0000000000000000000000000000000000000000",
+    MATIC_CHAIN: {
+        PHNX: "0x92C59F1cC9A322670CCa29594e4D994d48BDFd36",
+        ORACLE:"",
+        DAO:"",
+        USDT:"0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+        WMATIC:"0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"
+    }
 }
 
 // let deployedOracleRinkeby = "0x2A37ab9C39F10d1fF19526BF2E0007847015D7Cc"
@@ -95,7 +102,7 @@ const printConsoles = (receipt, name) => {
     });
 
     //below is the mainnet foAddressesrking work
-    it('it should deploy oracle', async function () {
+    xit('it should deploy oracle', async function () {
         //pre requisit
         //  1: uncomment USDT AND WETH address from Oracle.sol
         //  2: uncomment mainnet from from hardhat config
@@ -103,14 +110,14 @@ const printConsoles = (receipt, name) => {
         OracleInstance = await Oracle.deploy();
         mainnetAddresses.NEW_ORACLE = OracleInstance.address;
     })
-
-    it('it should deploy Events Dapp mainnet', async function () {
+    xit('it should deploy Events Dapp mainnet', async function () {
         DaoEvents = await ethers.getContractFactory("DaoEventsV2");
         daoEventsV2 = await DaoEvents.connect(deployer).deploy(mainnetAddresses.PHNX, mainnetAddresses.NEW_ORACLE);
         console.log("daoEvents.address");
         console.log(daoEventsV2.address);
         mainnetAddresses.DAO = daoEventsV2.address;
     })
+
     xit('it should add token to whitelist', async function() {
         let result = await daoEventsV2.connect(deployer).addtoWhiteList(["0x0cEbA92298b655C827D224D33461B4A1F9C418a6","1","Tether"]);
         console.log("buy ticket response");
@@ -189,7 +196,7 @@ const printConsoles = (receipt, name) => {
         let receipt = await PHNXPrice.wait();
         printConsoles(receipt, "ZRX");
     })
-    it('it should create Event', async function() {
+    xit('it should create Event', async function() {
         let result = await daoEventsV2.connect(maker).createEvent(createEventStruct);
         console.log("create event response");
 
@@ -205,7 +212,7 @@ const printConsoles = (receipt, name) => {
         console.log(eventObj);
         console.log(desiredEvent.eventId.toNumber()); 
     } )
-    it('it should purchase event ticket', async function() {
+    xit('it should purchase event ticket', async function() {
         let result = await expect(daoEventsV2.connect(taker).buyTicket(buyTicketStruct, mainnetAddresses.ZERO, { value: ONE_ETH })).to.emit(daoEventsV2, "SoldTicketDetails2");
         console.log("buy ticket response");
         console.log(result);
@@ -219,5 +226,75 @@ const printConsoles = (receipt, name) => {
         let daiResult = await daoEventsV2.connect(taker).isWhiteListedToken(mainnetAddresses.DAI);
         let wethResult = await daoEventsV2.connect(taker).isWhiteListedToken(mainnetAddresses.WETH);
         console.log(daiResult, wethResult);
+    })
+// --------------------------------------------------------------------------------------------------------
+    //below is the matic mainnet foAddressesrking work
+    it('it should deploy oracle', async function () {
+        //pre requisit
+        //  1: uncomment USDT AND WETH address from Oracle.sol
+        //  2: uncomment mainnet from from hardhat config
+        const Oracle = await ethers.getContractFactory("Oracle");
+        OracleInstance = await Oracle.deploy();
+        console.log(OracleInstance.address);
+        mainnetAddresses.MATIC_CHAIN.ORACLE = OracleInstance.address;
+    })
+
+    it('it should deploy Events Dapp mainnet', async function () {
+        DaoEvents = await ethers.getContractFactory("DaoEventsV2");
+        daoEventsV2 = await DaoEvents.connect(deployer).deploy(mainnetAddresses.MATIC_CHAIN.PHNX, mainnetAddresses.MATIC_CHAIN.ORACLE);
+        console.log("daoEvents.address");
+        console.log(daoEventsV2.address);
+        mainnetAddresses.MATIC_CHAIN.DAO = daoEventsV2.address;
+    })
+    xit('it should give whitelist tokens address', async function () {
+        let result = await daoEventsV2.connect(deployer).getWhiteListedTokensList();
+        console.log("get whitelist response");
+        console.log(result);
+        console.log("-------------------");
+    })
+
+
+    xit('it should give the 1MATIC to USDT amount', async function() {
+        let PHNXPrice = await OracleInstance.fetch(mainnetAddresses.MATIC_CHAIN.WMATIC);
+        let receipt = await PHNXPrice.wait();
+        printConsoles(receipt, "MATIC");
+    })
+    xit('it should give the 1USDC to USDT amount', async function() {
+        let PHNXPrice = await OracleInstance.fetch(mainnetAddresses.USDC);
+        let receipt = await PHNXPrice.wait();
+        printConsoles(receipt, "USDC");
+    })
+    xit('it should give the 1PHNX to USDT amount', async function() {
+        let PHNXPrice = await OracleInstance.fetch(mainnetAddresses.MATIC_CHAIN.PHNX);
+        let receipt = await PHNXPrice.wait();
+        printConsoles(receipt, "PHNX");
+    })
+    it('it should create Event', async function() {
+        let result = await daoEventsV2.connect(maker).createEvent(createEventStruct);
+        console.log("create event response");
+
+        let receipt = await result.wait();
+        let events = receipt.events.find((x) =>  x.event == "CreatedEvent")
+        let desiredEvent=  events && events.args
+        console.log("desiredEvent");
+        let eventObj = {
+            owner: desiredEvent.owner,
+            eventId: desiredEvent.eventId.toNumber(),
+            ...desiredEvent
+        } 
+        console.log(eventObj);
+        console.log(desiredEvent.eventId.toNumber()); 
+        console.log(Object.entries(desiredEvent).map(([key, value]) => `${key}: ${value}`)); 
+        console.log('-----------');
+    } )
+    it('it should purchase event ticket', async function() {
+        let result = await daoEventsV2.connect(taker).buyTicket(buyTicketStruct, mainnetAddresses.ZERO, { value: ONE_ETH });
+        console.log("buy ticket response");
+        console.log(result);
+        // use below code to see the event details
+        let receipt = await result.wait();
+        let events = receipt.events.find((x) =>  x.event == "SoldTicketDetails2")
+        console.log(events.args);
+
     })
 });

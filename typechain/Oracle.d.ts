@@ -25,7 +25,7 @@ interface OracleInterface extends ethers.utils.Interface {
     "PHNX()": FunctionFragment;
     "UNISWAP_V2_FACTORY()": FunctionFragment;
     "USDT()": FunctionFragment;
-    "WETH()": FunctionFragment;
+    "WMATIC()": FunctionFragment;
     "_calculate(uint256,uint256,uint32,address)": FunctionFragment;
     "cummulativeAveragePrice(address)": FunctionFragment;
     "cummulativeAveragePriceReserve(address)": FunctionFragment;
@@ -44,7 +44,7 @@ interface OracleInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "USDT", values?: undefined): string;
-  encodeFunctionData(functionFragment: "WETH", values?: undefined): string;
+  encodeFunctionData(functionFragment: "WMATIC", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "_calculate",
     values: [BigNumberish, BigNumberish, BigNumberish, string]
@@ -86,7 +86,7 @@ interface OracleInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "USDT", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "WETH", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "WMATIC", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "_calculate", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "cummulativeAveragePrice",
@@ -152,9 +152,9 @@ export class Oracle extends Contract {
 
     "USDT()"(overrides?: CallOverrides): Promise<[string]>;
 
-    WETH(overrides?: CallOverrides): Promise<[string]>;
+    WMATIC(overrides?: CallOverrides): Promise<[string]>;
 
-    "WETH()"(overrides?: CallOverrides): Promise<[string]>;
+    "WMATIC()"(overrides?: CallOverrides): Promise<[string]>;
 
     _calculate(
       latestCommulative: BigNumberish,
@@ -266,9 +266,9 @@ export class Oracle extends Contract {
 
   "USDT()"(overrides?: CallOverrides): Promise<string>;
 
-  WETH(overrides?: CallOverrides): Promise<string>;
+  WMATIC(overrides?: CallOverrides): Promise<string>;
 
-  "WETH()"(overrides?: CallOverrides): Promise<string>;
+  "WMATIC()"(overrides?: CallOverrides): Promise<string>;
 
   _calculate(
     latestCommulative: BigNumberish,
@@ -374,9 +374,9 @@ export class Oracle extends Contract {
 
     "USDT()"(overrides?: CallOverrides): Promise<string>;
 
-    WETH(overrides?: CallOverrides): Promise<string>;
+    WMATIC(overrides?: CallOverrides): Promise<string>;
 
-    "WETH()"(overrides?: CallOverrides): Promise<string>;
+    "WMATIC()"(overrides?: CallOverrides): Promise<string>;
 
     _calculate(
       latestCommulative: BigNumberish,
@@ -490,9 +490,9 @@ export class Oracle extends Contract {
 
     "USDT()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    WETH(overrides?: CallOverrides): Promise<BigNumber>;
+    WMATIC(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "WETH()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "WMATIC()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     _calculate(
       latestCommulative: BigNumberish,
@@ -603,9 +603,9 @@ export class Oracle extends Contract {
 
     "USDT()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    WETH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    WMATIC(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "WETH()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "WMATIC()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     _calculate(
       latestCommulative: BigNumberish,

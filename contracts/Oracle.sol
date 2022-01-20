@@ -565,16 +565,28 @@ contract Oracle is IOracle {
     using SafeMath for *;
     // using SafeMath for uint32;
 
-    address public constant USDT = 0x0cEbA92298b655C827D224D33461B4A1F9C418a6; // rinkeby new usdt
-    address public constant WETH = 0xc778417E063141139Fce010982780140Aa0cD5Ab; // rinkeby
-    address public constant PHNX = 0x521855AA99a80Cb467A12b1881f05CF9440c7023; // rinkeby
+    // address public constant USDT = 0x0cEbA92298b655C827D224D33461B4A1F9C418a6; // rinkeby new usdt
+    // address public constant WETH = 0xc778417E063141139Fce010982780140Aa0cD5Ab; // rinkeby
+    // address public constant PHNX = 0x521855AA99a80Cb467A12b1881f05CF9440c7023; // rinkeby
+
+    // address public constant WMATIC = 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270; // mumbai
+    // address public constant USDT = 0xA02f6adc7926efeBBd59Fd43A84f4E0c0c91e832; // mumbai usdt
+    // address public constant PHNX = 0x3B002f4e7902b95CbC673Bff68Ef2987ef825e2b; // mumbai phoenix
+
+    address public constant WMATIC = 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270; // polygen mainnet
+    address public constant USDT = 0xc2132D05D31c914a87C6611C10748AEb04B58e8F; //  polygen mainnet
+    address public constant PHNX = 0x92C59F1cC9A322670CCa29594e4D994d48BDFd36; // polygen mainnet phoenix
     
-    // address public constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7; // mainnet
-    // address public constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; // mainnet
-    // address public constant PHNX = 0x38A2fDc11f526Ddd5a607C1F251C065f40fBF2f7; // mainnet
+    // address public constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7; // ethereum mainnet
+    // address public constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; // ethereum mainnet
+    // address public constant PHNX = 0x38A2fDc11f526Ddd5a607C1F251C065f40fBF2f7; // ethereum mainnet
+    
+    // address public constant UNISWAP_V2_FACTORY =
+    //     0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f; // rinkeby
     
     address public constant UNISWAP_V2_FACTORY =
-        0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f; // rinkeby
+        0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32; // matic
+    
     IUniswapV2Factory factoryInterface;
     mapping(address => uint256) public cummulativeAveragePrice;
     mapping(address => uint256) public cummulativeEthPrice;
@@ -591,11 +603,11 @@ contract Oracle is IOracle {
     }
 
     function setValues(address token) public {
-        address pool = factoryInterface.getPair(WETH, token);
+        address pool = factoryInterface.getPair(WMATIC, token);
         console.log("pool address");
         console.log(pool);
         if (pool != address(0)) {
-            if (WETH < token) {
+            if (WMATIC < token) {
                 (
                     cummulativeEthPrice[token],
                     cummulativeAveragePrice[token],
@@ -643,6 +655,7 @@ contract Oracle is IOracle {
     //     return price;
     // }
 
+    //for matic chain, eth = matic
     function fetch(address token) external override returns (uint256 price) {
         if (
             cummulativeAveragePrice[token] == 0 ||
@@ -655,7 +668,7 @@ contract Oracle is IOracle {
         console.log("ethPerUSDT");
         console.log(ethPerUSDT);
         emit AssetValue(ethPerUSDT, block.timestamp);
-        if(token == WETH) {
+        if(token == WMATIC) {
             price = ethPerUSDT;
             console.log("price");
             console.log(price);
@@ -703,7 +716,7 @@ contract Oracle is IOracle {
         view
         returns (uint256 ethPerToken)
     {
-        address poolAddress = factoryInterface.getPair(WETH, token);
+        address poolAddress = factoryInterface.getPair(WMATIC, token);
         if (poolAddress == address(0)) return 0;
         uint32 timeElapsed = uint32(
             (lastTokenTimestamp[token]).sub(tokenToTimestampLast[token])

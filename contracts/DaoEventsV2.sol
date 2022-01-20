@@ -51,10 +51,16 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         // addtoWhiteList(0xeb8f08a975Ab53E34D8a0330E0D34de942C95926); //usdc
         // addtoWhiteList(0x83e556Da6514325eE615FF868cd0d324856fa0Cf); //matic
 
-        addtoWhiteList(WhiteListedToken({tokenAddress:0x0cEbA92298b655C827D224D33461B4A1F9C418a6,chainId:1,identifier:"Tether"})); //rinkeby new usdt
-        addtoWhiteList(WhiteListedToken({tokenAddress:0xc778417E063141139Fce010982780140Aa0cD5Ab,chainId:1,identifier:"weth"})); //weth
-        addtoWhiteList(WhiteListedToken({tokenAddress:0x521855AA99a80Cb467A12b1881f05CF9440c7023,chainId:1,identifier:"phoenixdao"})); //phnx
-        addtoWhiteList(WhiteListedToken({tokenAddress:0xeb8f08a975Ab53E34D8a0330E0D34de942C95926,chainId:1,identifier:"usd-coin"})); //usdc
+        // addtoWhiteList(WhiteListedToken({tokenAddress:0x0cEbA92298b655C827D224D33461B4A1F9C418a6,chainId:1,identifier:"Tether"})); //rinkeby new usdt
+        // addtoWhiteList(WhiteListedToken({tokenAddress:0xc778417E063141139Fce010982780140Aa0cD5Ab,chainId:1,identifier:"weth"})); //weth
+        // addtoWhiteList(WhiteListedToken({tokenAddress:0x521855AA99a80Cb467A12b1881f05CF9440c7023,chainId:1,identifier:"phoenixdao"})); //phnx
+        // addtoWhiteList(WhiteListedToken({tokenAddress:0xeb8f08a975Ab53E34D8a0330E0D34de942C95926,chainId:1,identifier:"usd-coin"})); //usdc
+        
+        //below are matic mainnet addresses
+        addtoWhiteList(WhiteListedToken({tokenAddress:0xc2132D05D31c914a87C6611C10748AEb04B58e8F,chainId:137,identifier:"Tether"})); //usdt
+        addtoWhiteList(WhiteListedToken({tokenAddress:0x92C59F1cC9A322670CCa29594e4D994d48BDFd36,chainId:137,identifier:"phoenixdao"})); //phnx
+        addtoWhiteList(WhiteListedToken({tokenAddress:0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174,chainId:137,identifier:"usd-coin"})); //usdc
+        addtoWhiteList(WhiteListedToken({tokenAddress:0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270,chainId:137,identifier:"wmatic"})); //wmatic
     }
 
     modifier goodTime(uint256 _time) {

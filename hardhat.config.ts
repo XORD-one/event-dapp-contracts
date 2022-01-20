@@ -105,9 +105,15 @@ const config: HardhatUserConfig = {
         mnemonic,
       },
       chainId: chainIds.hardhat,
+      //eth mainnet forking
+      // forking: {
+      //   url: "https://eth-mainnet.alchemyapi.io/v2/MRA8vBbiivNCQvkI_clJi-8XM0-21oMR",
+      //   blockNumber: 13951015
+      // },
+      //polygon mainnet forking
       forking: {
-        url: "https://eth-mainnet.alchemyapi.io/v2/MRA8vBbiivNCQvkI_clJi-8XM0-21oMR",
-        blockNumber: 13951015
+        url: "https://polygon-mainnet.infura.io/v3/7f6f5921404842ba992a4d334431c6f7",
+        blockNumber: 23936663
       },
     },
     rinkeby: {
@@ -117,17 +123,26 @@ const config: HardhatUserConfig = {
       // gasPrice: 8000000000,
       // saveDeployments: true,
     },
+    mumbai: {
+      url: "https://rpc-mumbai.maticvigil.com",
+      accounts: [`${process.env.PRIVATE_KEY}`],
+    },
+    matic: {
+      url: "https://polygon-mainnet.infura.io/v3/7f6f5921404842ba992a4d334431c6f7",
+      accounts: [`${process.env.PRIVATE_KEY}`],
+    },
     goerli: createTestnetConfig("goerli"),
     kovan: createTestnetConfig("kovan"),
     // rinkeby: createTestnetConfig("rinkeby"),
     ropsten: createTestnetConfig("ropsten"),
     bsctestnet: createTestnetConfig("bsctestnet"),
-    mumbai: createTestnetConfig("mumbai"),
+    // mumbai: createTestnetConfig("mumbai"),
   },
   etherscan: {
     // Your API key for Etherscan
     // Obtain one at https://etherscan.io/
-    apiKey: "RQ83XPC9R4JQ9GJFXMIGXFEHZIY1SG1E5V"
+    // apiKey: "RQ83XPC9R4JQ9GJFXMIGXFEHZIY1SG1E5V"  //ethscan api key
+    apiKey: "27E6B4CSYQ71JJG25ZDF9IP2ZBRY6T6MF3"  //matic mainnet api key
   },
   paths: {
     artifacts: "./artifacts",
