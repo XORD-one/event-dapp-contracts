@@ -1,4 +1,6 @@
 const { expect } = require("chai");
+const routerAbi = require("./../../../uniswapv2RouterAbi.json")
+const usdcAbi = require("./../../../usdcAbi.json")
 let tokenAddress, OracleInstance;
 //ethereum erc20 tokens list
 let mainnetAddresses = {
@@ -17,6 +19,7 @@ let mainnetAddresses = {
     MATIC:  "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
     LRC:    "0xbbbbca6a901c926f240b89eacb641d8aec7aeafd",
     ZRX:    "0xe41d2489571d322189246dafa5ebde1f4699f498",
+    ROUTER: "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
     ZERO:   "0x0000000000000000000000000000000000000000",
 }
 
@@ -35,7 +38,7 @@ let DaoEvents, daoEventsV2;
 let buyTicketStruct = ["1", 0, "Karachi"];
 const ONE_ETH = ethers.utils.parseUnits("1");
 
-let createEventStruct =[false,true,true,true,"0x4Ba7f770DD847C0F5aD10F69fc5809F1dC915C84","1000000000000000000","0","0","neww event","charity-and-causes","abcccccc location  , American Samoa", " ","QmcYtnAG8GEAtrqjG1vGZY5HQ4NXnEnx4scVsCw1CCDCH2",[false],['0'], ['30'],['0'], ['chickenFeast']]
+let createEventStruct =[false,true,true,true,"0x4Ba7f770DD847C0F5aD10F69fc5809F1dC915C84","1000000000000000000","0","0","neww event","charity-and-causes","abcccccc location  , American Samoa", " ","QmcYtnAG8GEAtrqjG1vGZY5HQ4NXnEnx4scVsCw1CCDCH2",[false],['0'], ['234753322604'],['0'], ['chickenFeast']]
 
 const printConsoles = (receipt, name) => {
     let events = receipt.events.filter((x) =>  x.event == "AssetValue")
@@ -205,14 +208,32 @@ const printConsoles = (receipt, name) => {
         console.log(eventObj);
         console.log(desiredEvent.eventId.toNumber()); 
     } )
-    it('it should purchase event ticket', async function() {
-        let result = await expect(daoEventsV2.connect(taker).buyTicket(buyTicketStruct, mainnetAddresses.ZERO, { value: ONE_ETH })).to.emit(daoEventsV2, "SoldTicketDetails2");
+    it('it should purchase event ticket via USDC', async function() {
+        const usdcTokenInstance = new ethers.Contract( mainnetAddresses.USDC, usdcAbi, taker);
+        await usdcTokenInstance.connect(taker).approve( mainnetAddresses.DAO, "9999999999999999");
+
+
+        const uniswapRouterInstance = new ethers.Contract( mainnetAddresses.ROUTER, routerAbi, taker);
+        const res = await uniswapRouterInstance.connect(taker).swapExactETHForTokens( 1000, [mainnetAddresses.WETH ,mainnetAddresses.USDC] , taker.address, 1645453915, {value:"100000000000000000000"})
+        console.log("res", res);
+
+        const balance1 = await usdcTokenInstance.connect(taker).balanceOf( taker.address);
+        console.log("balance before",balance1.toString());
+
+
+        let result = await daoEventsV2.connect(taker).buyTicket(buyTicketStruct, mainnetAddresses.USDC, { value: "0" });
+
+        const balance2 = await usdcTokenInstance.connect(taker).balanceOf( taker.address);
+        console.log("balance after",balance2.toString());
+
         console.log("buy ticket response");
-        console.log(result);
+        // console.log(result);
         // use below code to see the event details
-        // let receipt = await result.wait();
-        // let events = receipt.events.filter((x) =>  x.event == "SoldTicketDetails2")
-        // console.log(events);
+        let receipt = await result.wait();
+        let events = receipt.events.find((x) =>  x.event == "SoldTicketDetails2")
+        console.log(events.args);
+
+
 
     })
     xit('it should tell if token is accepted', async function() {
