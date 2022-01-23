@@ -15,7 +15,7 @@ async function main() {
   // const oracle = await Oracle.deploy();
   // console.log("Oracle address: ", oracle.address);
   // let oracleAddress = `${oracle.address}`;
-  let oracleAddress = "0x0bC4E326b331c0643f5B3D85f0E6eA66ED6B7adf";
+  let oracleAddress = "0x6229f9b478982eaf8752dc207c80AB2464980DaE";
 
   const DaoEvents = await ethers.getContractFactory("DaoEventsV2");
   const daoEventsV2 = await DaoEvents.deploy("0x92C59F1cC9A322670CCa29594e4D994d48BDFd36", oracleAddress);

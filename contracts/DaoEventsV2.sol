@@ -13,6 +13,8 @@ interface IERC20 {
         address recipient,
         uint256 amount
     ) external returns (bool);
+    function decimals() external view returns (uint8);
+
 }
 
 contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
@@ -57,7 +59,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         // addtoWhiteList(WhiteListedToken({tokenAddress:0xeb8f08a975Ab53E34D8a0330E0D34de942C95926,chainId:1,identifier:"usd-coin"})); //usdc
         
         //below are matic mainnet addresses
-        addtoWhiteList(WhiteListedToken({tokenAddress:0xc2132D05D31c914a87C6611C10748AEb04B58e8F,chainId:137,identifier:"Tether"})); //usdt
+        addtoWhiteList(WhiteListedToken({tokenAddress:0xc2132D05D31c914a87C6611C10748AEb04B58e8F,chainId:137,identifier:"tether"})); //usdt
         addtoWhiteList(WhiteListedToken({tokenAddress:0x92C59F1cC9A322670CCa29594e4D994d48BDFd36,chainId:137,identifier:"phoenixdao"})); //phnx
         addtoWhiteList(WhiteListedToken({tokenAddress:0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174,chainId:137,identifier:"usd-coin"})); //usdc
         addtoWhiteList(WhiteListedToken({tokenAddress:0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270,chainId:137,identifier:"wmatic"})); //wmatic
@@ -274,6 +276,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         } else {
             //eth payment
             if(token == address(0) && msgAmount > 0) {
+                _usdtPrice = _event.prices[_buyTicket.categoryIndex];
                 (_phnxPrice, msgAmount) = updateMsgValue(_phnxPrice, msgAmount);
             }
             //fixed crypto payment, variable dollar price, 2 means 2 phnx or 2 usdt etc
@@ -309,11 +312,13 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
 
 
         _buyTicketInternal(_buyTicket, _event, _phnxPrice, _ticketId, token);
-        uint percentToDeduct = 0;
         
         //payment is in other than PHNX and event is not free
         if(token != tokenAddress && _event.token) {
-            percentToDeduct = (_phnxPrice * 2000000000000000000)/100000000000000000000;
+            uint percentToDeduct = 0;
+            uint8 decimals = IERC20(token).decimals();
+            //  uint256 twoPer = (2*10**decimals)/10**2;
+            percentToDeduct = (_phnxPrice*((2*10**decimals)/10**2))/10**decimals;
             if(token == address(0) && msgAmount > 0) {
                 require(msgAmount >= percentToDeduct, "DaoEventsV2: Amount to be paid is inSufficient");
                 msgAmount -= percentToDeduct;
