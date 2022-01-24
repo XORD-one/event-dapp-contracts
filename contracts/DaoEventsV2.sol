@@ -13,6 +13,8 @@ interface IERC20 {
         address recipient,
         uint256 amount
     ) external returns (bool);
+    function decimals() external view returns (uint8);
+
 }
 
 contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
@@ -51,8 +53,8 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         // addtoWhiteList(0xeb8f08a975Ab53E34D8a0330E0D34de942C95926); //usdc
         // addtoWhiteList(0x83e556Da6514325eE615FF868cd0d324856fa0Cf); //matic
 
-        addtoWhiteList(WhiteListedToken({tokenAddress:0x0cEbA92298b655C827D224D33461B4A1F9C418a6,chainId:1,identifier:"Tether"})); //rinkeby new usdt
-        addtoWhiteList(WhiteListedToken({tokenAddress:0xc778417E063141139Fce010982780140Aa0cD5Ab,chainId:1,identifier:"weth"})); //weth
+        addtoWhiteList(WhiteListedToken({tokenAddress:0x0cEbA92298b655C827D224D33461B4A1F9C418a6,chainId:1,identifier:"tether"})); //rinkeby new usdt
+        // addtoWhiteList(WhiteListedToken({tokenAddress:0xc778417E063141139Fce010982780140Aa0cD5Ab,chainId:1,identifier:"weth"})); //weth
         addtoWhiteList(WhiteListedToken({tokenAddress:0x521855AA99a80Cb467A12b1881f05CF9440c7023,chainId:1,identifier:"phoenixdao"})); //phnx
         addtoWhiteList(WhiteListedToken({tokenAddress:0xeb8f08a975Ab53E34D8a0330E0D34de942C95926,chainId:1,identifier:"usd-coin"})); //usdc
     }
@@ -248,7 +250,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         eventExist(_buyTicket.eventId)
         goodTime(events[_buyTicket.eventId].time)
     {
-
+        require(isWhiteListed(token) || (token == address(0) && msg.value > 0), "token is not accepted");
         uint256 ticketCategoryIndex = _buyTicket.categoryIndex;
         uint256 _eventId = _buyTicket.eventId;
         uint256 msgAmount = msg.value;
@@ -268,6 +270,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         } else {
             //eth payment
             if(token == address(0) && msgAmount > 0) {
+                _usdtPrice = _event.prices[_buyTicket.categoryIndex];
                 (_phnxPrice, msgAmount) = updateMsgValue(_phnxPrice, msgAmount);
             }
             //fixed crypto payment, variable dollar price, 2 means 2 phnx or 2 usdt etc
@@ -303,18 +306,21 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
 
 
         _buyTicketInternal(_buyTicket, _event, _phnxPrice, _ticketId, token);
-        uint percentToDeduct = 0;
         
         //payment is in other than PHNX and event is not free
         if(token != tokenAddress && _event.token) {
-            percentToDeduct = (_phnxPrice * 2000000000000000000)/100000000000000000000;
+            uint percentToDeduct = 0;
+            uint8 decimals = token != address(0) ? IERC20(token).decimals() : 18;  //check for eth payment
+           
+            //  uint256 twoPer = (2*10**decimals)/10**2;
+            percentToDeduct = (_phnxPrice * ( (2*10**decimals) / 10**2 ) ) / 10**decimals ;
+
             if(token == address(0) && msgAmount > 0) {
                 require(msgAmount >= percentToDeduct, "DaoEventsV2: Amount to be paid is inSufficient");
                 msgAmount -= percentToDeduct;
                 console.log("msgAmount",msgAmount);
                 console.log("percentToDeduct",percentToDeduct);
             }
-            //to change -> _event.owner with multisig wallet
             sendAmount(_event.token, multisigWallet, percentToDeduct, token);
         }
 

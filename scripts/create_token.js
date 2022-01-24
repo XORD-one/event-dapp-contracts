@@ -15,7 +15,7 @@ async function main() {
   // console.log("Oracle address: ", oracle.address);
 
   const DaoEvents = await ethers.getContractFactory("DaoEventsV2");
-  const daoEventsV2 = await DaoEvents.deploy("0x521855AA99a80Cb467A12b1881f05CF9440c7023","0xEdF851bc9a7c58CB00CF4Ce11B9167fcA8feb99a");
+  const daoEventsV2 = await DaoEvents.deploy("0x521855AA99a80Cb467A12b1881f05CF9440c7023","0xe7649aEF178AeCACfC9bDb51c8642041bcD60A8b");
   await daoEventsV2.deployed();
 
   console.log("Dao events deployed to ", daoEventsV2.address);
@@ -27,6 +27,7 @@ async function main() {
 
   // const proxyAddress = '0xb819adb6d585dc321a9bc055faa6303b8d3cf186';
   // const PolkalokrToken = await ethers.getContractFactory("PolkalokrToken");
+  
   // const PolkalokrTokenAddress = await upgrades.prepareUpgrade (proxyAddress,PolkalokrToken);
   // console.log("PolkalokrToken upgrade address :",PolkalokrTokenAddress);
 }

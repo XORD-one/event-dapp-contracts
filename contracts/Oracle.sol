@@ -665,12 +665,18 @@ contract Oracle is IOracle {
         }
         else{
             uint256 ethPerToken = _getAmounts(token);
+
             emit AssetValue(ethPerToken, block.timestamp);
             console.log("ethPerToken:", ethPerToken);
+
             if (ethPerToken == 0 || ethPerUSDT == 0) return 0;
-            
-            price = (ethPerUSDT.mul(1e18)).div(ethPerToken);
+
+            uint8 decimals = IERC20(token).decimals();
+            console.log("decimals:", decimals);
+
+            price = (ethPerUSDT.mul(10**decimals)).div(ethPerToken);
             console.log("price: ", price);
+
             emit AssetValue(price, block.timestamp);
             return price;
 
