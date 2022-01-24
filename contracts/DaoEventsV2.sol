@@ -250,7 +250,12 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         eventExist(_buyTicket.eventId)
         goodTime(events[_buyTicket.eventId].time)
     {
-        require(isWhiteListed(token) || (token == address(0) && msg.value > 0), "token is not accepted");
+        // require((token == address(0) && msg.value > 0) || isWhiteListed(token), "token is not accepted");
+        if(!(token == address(0) && msg.value > 0))
+        {
+            if(token != address(0)) require(isWhiteListed(token), "EventsDao: token is not accepted");
+            else require(msg.value > 0, "EventsDao: amount insufficient");
+        }
         uint256 ticketCategoryIndex = _buyTicket.categoryIndex;
         uint256 _eventId = _buyTicket.eventId;
         uint256 msgAmount = msg.value;
