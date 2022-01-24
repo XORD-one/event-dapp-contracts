@@ -113,7 +113,7 @@ const config: HardhatUserConfig = {
       //polygon mainnet forking
       forking: {
         url: "https://polygon-mainnet.infura.io/v3/7f6f5921404842ba992a4d334431c6f7",
-        blockNumber: 23936663
+        blockNumber: 24063933
       },
     },
     rinkeby: {

@@ -1,5 +1,7 @@
 const { expect } = require("chai");
 let tokenAddress, OracleInstance;
+const maticUsdcAbi = require("./../../../maticUsdcAbi.json");
+const maticRouterAbi = require("./../../../maticRouter.json");
 //ethereum erc20 tokens list
 let mainnetAddresses = {
     USDT:   "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -23,7 +25,9 @@ let mainnetAddresses = {
         ORACLE:"",
         DAO:"",
         USDT:"0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
-        WMATIC:"0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"
+        USDC:"0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+        WMATIC:"0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+        QUICK:"0xa5e0829caced8ffdd4de3c43696c57f7d7a678ff",
     }
 }
 
@@ -42,7 +46,7 @@ let DaoEvents, daoEventsV2;
 let buyTicketStruct = ["1", 0, "Karachi"];
 const ONE_ETH = ethers.utils.parseUnits("1");
 
-let createEventStruct =[false,true,true,true,"0x4Ba7f770DD847C0F5aD10F69fc5809F1dC915C84","1000000000000000000","0","0","neww event","charity-and-causes","abcccccc location  , American Samoa", " ","QmcYtnAG8GEAtrqjG1vGZY5HQ4NXnEnx4scVsCw1CCDCH2",[false],['0'], ['30'],['0'], ['chickenFeast']]
+let createEventStruct =[false,true,true,false,"0x4Ba7f770DD847C0F5aD10F69fc5809F1dC915C84","1000000000000000000","0","0","neww event","charity-and-causes","abcccccc location  , American Samoa", " ","QmcYtnAG8GEAtrqjG1vGZY5HQ4NXnEnx4scVsCw1CCDCH2",[false],['0'], ['2000000000000000000'],['0'], ['chickenFeast']]
 
 const printConsoles = (receipt, name) => {
     let events = receipt.events.filter((x) =>  x.event == "AssetValue")
@@ -124,13 +128,19 @@ const printConsoles = (receipt, name) => {
         console.log(result);
     })
     xit("it should tell if token is whitelisted or not", async function() {
-        let result = await daoEventsV2.isWhiteListed("0x0cEbA92298b655C827D224D33461B4A1F9C418a6");
+        let result = await daoEventsV2.isWhiteListed(mainnetAddresses.MATIC_CHAIN.USDT);
         console.log("isTokenWhitelisted response");
         console.log(result);
     })
     xit('it should give whitelist tokens address', async function () {
         let result = await daoEventsV2.connect(deployer).getWhiteListedTokensList();
         console.log("get whitelist response");
+        console.log(result);
+        console.log("-------------------");
+    })
+    xit('it should give USDT token if i send token address', async function () {
+        let result = await daoEventsV2.connect(deployer).getTokenByAddress(mainnetAddresses.USDT);
+        console.log("USDT token response");
         console.log(result);
         console.log("-------------------");
     })
@@ -227,6 +237,8 @@ const printConsoles = (receipt, name) => {
         let wethResult = await daoEventsV2.connect(taker).isWhiteListedToken(mainnetAddresses.WETH);
         console.log(daiResult, wethResult);
     })
+
+
 // --------------------------------------------------------------------------------------------------------
     //below is the matic mainnet foAddressesrking work
     it('it should deploy oracle', async function () {
@@ -245,6 +257,12 @@ const printConsoles = (receipt, name) => {
         console.log("daoEvents.address");
         console.log(daoEventsV2.address);
         mainnetAddresses.MATIC_CHAIN.DAO = daoEventsV2.address;
+    })
+    it('it should give whitelisted token by address', async function () {
+        let result = await daoEventsV2.connect(deployer).getTokenByAddress(mainnetAddresses.MATIC_CHAIN.USDT);
+        console.log("get whitelist token response");
+        console.log(result);
+        console.log("-------------------");
     })
     xit('it should give whitelist tokens address', async function () {
         let result = await daoEventsV2.connect(deployer).getWhiteListedTokensList();
@@ -275,7 +293,7 @@ const printConsoles = (receipt, name) => {
 
         let receipt = await result.wait();
         let events = receipt.events.find((x) =>  x.event == "CreatedEvent")
-        let desiredEvent=  events && events.args
+        let desiredEvent=  events ? events.args : {}
         console.log("desiredEvent");
         let eventObj = {
             owner: desiredEvent.owner,
@@ -287,14 +305,30 @@ const printConsoles = (receipt, name) => {
         console.log(Object.entries(desiredEvent).map(([key, value]) => `${key}: ${value}`)); 
         console.log('-----------');
     } )
-    it('it should purchase event ticket', async function() {
-        let result = await daoEventsV2.connect(taker).buyTicket(buyTicketStruct, mainnetAddresses.ZERO, { value: ONE_ETH });
+    it('it should purchase event ticket via USDC', async function() {
+                                                        //implementation contract abi and proxyContract address
+        const usdcTokenInstance = new ethers.Contract( mainnetAddresses.MATIC_CHAIN.USDC, maticUsdcAbi, taker); 
+        await usdcTokenInstance.connect(taker).approve( mainnetAddresses.MATIC_CHAIN.DAO, "9999999999999999");
+
+
+        const uniswapRouterInstance = new ethers.Contract( mainnetAddresses.MATIC_CHAIN.QUICK, maticRouterAbi, taker);
+        const res = await uniswapRouterInstance.connect(taker).swapExactETHForTokens( 1000, [mainnetAddresses.MATIC_CHAIN.WMATIC ,mainnetAddresses.MATIC_CHAIN.USDC] , taker.address, 1645453915, {value:"100000000000000000000"})
+        console.log("res", res);
+
+        const balance1 = await usdcTokenInstance.connect(taker).balanceOf( taker.address);
+        console.log("balance before",balance1.toString());  //162 matics
+
+
+        let result = await daoEventsV2.connect(taker).buyTicket(buyTicketStruct, mainnetAddresses.MATIC_CHAIN.USDC, { value: "0" });
+
+        const balance2 = await usdcTokenInstance.connect(taker).balanceOf( taker.address);
+        console.log("balance after",balance2.toString());
+
         console.log("buy ticket response");
-        console.log(result);
+        // console.log(result);
         // use below code to see the event details
         let receipt = await result.wait();
         let events = receipt.events.find((x) =>  x.event == "SoldTicketDetails2")
         console.log(events.args);
-
-    })
+    }).timeout(100000)
 });
