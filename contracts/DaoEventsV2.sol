@@ -5,7 +5,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./IDaoEventsV2.sol";
 import "./EventTicketV2.sol";
-import "hardhat/console.sol";
 
 interface IERC20 {
     function transferFrom(
@@ -62,7 +61,7 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         addtoWhiteList(WhiteListedToken({tokenAddress:0xc2132D05D31c914a87C6611C10748AEb04B58e8F,chainId:137,identifier:"tether"})); //usdt
         addtoWhiteList(WhiteListedToken({tokenAddress:0x92C59F1cC9A322670CCa29594e4D994d48BDFd36,chainId:137,identifier:"phoenixdao"})); //phnx
         addtoWhiteList(WhiteListedToken({tokenAddress:0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174,chainId:137,identifier:"usd-coin"})); //usdc
-        addtoWhiteList(WhiteListedToken({tokenAddress:0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270,chainId:137,identifier:"wmatic"})); //wmatic
+        // addtoWhiteList(WhiteListedToken({tokenAddress:0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270,chainId:137,identifier:"wmatic"})); //wmatic
     }
 
     modifier goodTime(uint256 _time) {
@@ -184,7 +183,6 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         returns (WhiteListedToken [] memory) 
     {
         WhiteListedToken [] memory _whiteListedTokensList = new WhiteListedToken[](tokensLength);
-        console.log("tokensLength",tokensLength);
         //loop over whiteList and add to array
         for (uint8 i = 1; i < tokensLength + 1; i++) {
             _whiteListedTokensList[i-1] = whiteListedTokens[i];
@@ -260,7 +258,6 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         if(!(token == address(0) && msg.value > 0))
         {
             if(token != address(0)) require(isWhiteListed(token), "EventsDao: token is not accepted");
-            //TO ADD -> check for !_event.token (free ticket) , check ticket price > 0
             else require(msg.value > 0, "EventsDao: amount insufficient");  
         }
         uint256 ticketCategoryIndex = _buyTicket.categoryIndex;
@@ -329,8 +326,6 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
             if(token == address(0) && msgAmount > 0) {
                 require(msgAmount >= percentToDeduct, "DaoEventsV2: Amount to be paid is inSufficient");
                 msgAmount -= percentToDeduct;
-                console.log("msgAmount",msgAmount);
-                console.log("percentToDeduct",percentToDeduct);
             }
             //to change -> _event.owner with multisig wallet
             sendAmount(_event.token, multisigWallet, percentToDeduct, token);
@@ -422,11 +417,8 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
             // event is paid
             //transfer the tokens to event owner
             if(_tokenAddress == address(0)) {
-                console.log("msg.value",msg.value);
-                console.log("amount",amount);
                 require(msg.value >= amount, "DaoEventsV2: Amount to be paid is inSufficient");
 
-                console.log("contract balance",address(this).balance);
                 (bool sent,) = to.call{value: amount}(""); // payment in eth
                 require(sent, "Failed to send Ether");
             } 

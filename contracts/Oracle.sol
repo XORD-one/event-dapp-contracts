@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: <SPDX-License>
 pragma solidity 0.7.5;
-import "hardhat/console.sol";
 interface IUniswapV2Factory {
     event PairCreated(
         address indexed token0,
@@ -605,8 +604,6 @@ contract Oracle is IOracle {
 
     function setValues(address token) public {
         address pool = factoryInterface.getPair(WMATIC, token);
-        console.log("pool address");
-        console.log(pool);
         if (pool != address(0)) {
             if (WMATIC < token) {
                 (
@@ -659,7 +656,6 @@ contract Oracle is IOracle {
     //for matic chain, eth = matic
     function fetch(address token) external override returns (uint256 price) {
         if(token == USDT || token == USDC) {
-            console.log("returning 1000000",1000000);
             return 1000000;
         } 
         if (
@@ -670,30 +666,21 @@ contract Oracle is IOracle {
             setValues(token);
         }
         uint256 ethPerUSDT = _getAmounts(USDT);
-        console.log("ethPerUSDT");
-        console.log(ethPerUSDT);
         emit AssetValue(ethPerUSDT, block.timestamp);
         if(token == WMATIC) {
             price = ethPerUSDT;
-            console.log("price");
-            console.log(price);
             emit AssetValue(ethPerUSDT, block.timestamp);
             emit AssetValue(price, block.timestamp);
             return price;
         }
         else{
-           			  uint256 ethPerToken = _getAmounts(token);
-            
+            uint256 ethPerToken = _getAmounts(token);
             emit AssetValue(ethPerToken, block.timestamp);
-            console.log("ethPerToken:", ethPerToken);
             
             if (ethPerToken == 0 || ethPerUSDT == 0) return 0;
             
             uint8 decimals = IERC20(token).decimals();
-            console.log("decimals:", decimals);
-            
             price = (ethPerUSDT.mul(10**decimals)).div(ethPerToken);
-            console.log("price: ", price);
             
             emit AssetValue(price, block.timestamp);
             return price;
