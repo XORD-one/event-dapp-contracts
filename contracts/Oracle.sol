@@ -568,6 +568,7 @@ contract Oracle is IOracle {
     address public constant USDT = 0x0cEbA92298b655C827D224D33461B4A1F9C418a6; // rinkeby new usdt
     address public constant WETH = 0xc778417E063141139Fce010982780140Aa0cD5Ab; // rinkeby
     address public constant PHNX = 0x521855AA99a80Cb467A12b1881f05CF9440c7023; // rinkeby
+    address public constant USDC = 0xeb8f08a975Ab53E34D8a0330E0D34de942C95926; // rinkeby
     
     // address public constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7; // mainnet
     // address public constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; // mainnet
@@ -644,10 +645,14 @@ contract Oracle is IOracle {
     // }
 
     function fetch(address token) external override returns (uint256 price) {
+        if(token == USDT || token == USDC) {
+            console.log("returning 1000000",1000000);
+            return 1000000;
+        } 
         if (
             cummulativeAveragePrice[token] == 0 ||
             (uint32(block.timestamp).sub(lastTokenTimestamp[token])) >=
-            3 minutes
+            1 minutes
         ) {
             setValues(token);
         }
