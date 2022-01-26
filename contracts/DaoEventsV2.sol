@@ -5,7 +5,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./IDaoEventsV2.sol";
 import "./EventTicketV2.sol";
-import "hardhat/console.sol";
 
 interface IERC20 {
     function transferFrom(
@@ -178,7 +177,6 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         returns (WhiteListedToken [] memory) 
     {
         WhiteListedToken [] memory _whiteListedTokensList = new WhiteListedToken[](tokensLength);
-        console.log("tokensLength",tokensLength);
         //loop over whiteList and add to array
         for (uint8 i = 1; i < tokensLength + 1; i++) {
             _whiteListedTokensList[i-1] = whiteListedTokens[i];
@@ -323,8 +321,6 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
             if(token == address(0) && msgAmount > 0) {
                 require(msgAmount >= percentToDeduct, "DaoEventsV2: Amount to be paid is inSufficient");
                 msgAmount -= percentToDeduct;
-                console.log("msgAmount",msgAmount);
-                console.log("percentToDeduct",percentToDeduct);
             }
             sendAmount(_event.token, multisigWallet, percentToDeduct, token);
         }
@@ -415,11 +411,8 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
             // event is paid
             //transfer the tokens to event owner
             if(_tokenAddress == address(0)) {
-                console.log("msg.value",msg.value);
-                console.log("amount",amount);
                 require(msg.value >= amount, "DaoEventsV2: Amount to be paid is inSufficient");
 
-                console.log("contract balance",address(this).balance);
                 (bool sent,) = to.call{value: amount}(""); // payment in eth
                 require(sent, "Failed to send Ether");
             } 
