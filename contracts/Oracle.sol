@@ -576,6 +576,7 @@ contract Oracle is IOracle {
     address public constant WMATIC = 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270; // polygen mainnet
     address public constant USDT = 0xc2132D05D31c914a87C6611C10748AEb04B58e8F; //  polygen mainnet
     address public constant PHNX = 0x92C59F1cC9A322670CCa29594e4D994d48BDFd36; // polygen mainnet phoenix
+    address public constant USDC = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174; // polygen mainnet usdc
     
     // address public constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7; // ethereum mainnet
     // address public constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; // ethereum mainnet
@@ -585,7 +586,7 @@ contract Oracle is IOracle {
     //     0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f; // rinkeby
     
     address public constant UNISWAP_V2_FACTORY =
-        0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32; // matic
+        0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32; // matic quickswap
     
     IUniswapV2Factory factoryInterface;
     mapping(address => uint256) public cummulativeAveragePrice;
@@ -657,10 +658,14 @@ contract Oracle is IOracle {
 
     //for matic chain, eth = matic
     function fetch(address token) external override returns (uint256 price) {
+        if(token == USDT || token == USDC) {
+            console.log("returning 1000000",1000000);
+            return 1000000;
+        } 
         if (
             cummulativeAveragePrice[token] == 0 ||
             (uint32(block.timestamp).sub(lastTokenTimestamp[token])) >=
-            3 minutes
+            1 minutes
         ) {
             setValues(token);
         }

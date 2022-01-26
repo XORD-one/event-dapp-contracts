@@ -1,8 +1,9 @@
 const { expect } = require("chai");
-let tokenAddress, OracleInstance;
 const maticUsdcAbi = require("./../../../maticUsdcAbi.json");
 const maticRouterAbi = require("./../../../maticRouter.json");
+const maticOracleAbi = require("./../../../maticOracle.json")
 //ethereum erc20 tokens list
+let tokenAddress, OracleInstanceTemp;
 let mainnetAddresses = {
     USDT:   "0xdAC17F958D2ee523a2206206994597C13D831ec7",
     PHNX:   "0x38A2fDc11f526Ddd5a607C1F251C065f40fBF2f7",
@@ -59,6 +60,10 @@ const printConsoles = (receipt, name) => {
     try {
         [deployer, taker, maker, partner] = await ethers.getSigners();
         createEventStruct[4] = maker.address;
+          const Oracle = await ethers.getContractFactory("Oracle");
+          OracleInstanceTemp = await Oracle.deploy();
+        console.log(OracleInstanceTemp.address);
+        // OracleInstanceTemp = await ethers.getContractAt("Oracle", "0x6229f9b478982eaf8752dc207c80AB2464980DaE");
     } catch (error) {
         console.log("error");
         console.log(error);
@@ -241,24 +246,26 @@ const printConsoles = (receipt, name) => {
 
 // --------------------------------------------------------------------------------------------------------
     //below is the matic mainnet foAddressesrking work
-    it('it should deploy oracle', async function () {
+    xit('it should deploy oracle', async function () {
         //pre requisit
         //  1: uncomment USDT AND WETH address from Oracle.sol
         //  2: uncomment mainnet from from hardhat config
-        const Oracle = await ethers.getContractFactory("Oracle");
-        OracleInstance = await Oracle.deploy();
-        console.log(OracleInstance.address);
-        mainnetAddresses.MATIC_CHAIN.ORACLE = OracleInstance.address;
-    })
+        // const Oracle = await ethers.getContractFactory("Oracle");
+        // OracleInstance = await Oracle.deploy();
+        // console.log(OracleInstance.address);
+        // mainnetAddresses.MATIC_CHAIN.ORACLE = OracleInstance.address;
+        OracleInstanceTemp = new ethers.Contract(0x6229f9b478982eaf8752dc207c80AB2464980DaE, maticOracleAbi, taker);
+        console.log(OracleInstanceTemp);
+    }).timeout(100000);
 
-    it('it should deploy Events Dapp mainnet', async function () {
+    xit('it should deploy Events Dapp mainnet', async function () {
         DaoEvents = await ethers.getContractFactory("DaoEventsV2");
         daoEventsV2 = await DaoEvents.connect(deployer).deploy(mainnetAddresses.MATIC_CHAIN.PHNX, mainnetAddresses.MATIC_CHAIN.ORACLE);
         console.log("daoEvents.address");
         console.log(daoEventsV2.address);
         mainnetAddresses.MATIC_CHAIN.DAO = daoEventsV2.address;
     })
-    it('it should give whitelisted token by address', async function () {
+    xit('it should give whitelisted token by address', async function () {
         let result = await daoEventsV2.connect(deployer).getTokenByAddress(mainnetAddresses.MATIC_CHAIN.USDT);
         console.log("get whitelist token response");
         console.log(result);
@@ -277,17 +284,21 @@ const printConsoles = (receipt, name) => {
         let receipt = await PHNXPrice.wait();
         printConsoles(receipt, "MATIC");
     })
-    xit('it should give the 1USDC to USDT amount', async function() {
-        let PHNXPrice = await OracleInstance.fetch(mainnetAddresses.USDC);
+    it('it should give the 1USDC to USDT amount', async function() {
+        console.log("OracleInstanceTemp.fetch");
+        let PHNXPrice = await OracleInstanceTemp.fetch(mainnetAddresses.MATIC_CHAIN.USDC);
         let receipt = await PHNXPrice.wait();
+        console.log(PHNXPrice);
+        console.log(receipt);
         printConsoles(receipt, "USDC");
+        console.log("OracleInstanceTemp.fetch");
     })
     xit('it should give the 1PHNX to USDT amount', async function() {
         let PHNXPrice = await OracleInstance.fetch(mainnetAddresses.MATIC_CHAIN.PHNX);
         let receipt = await PHNXPrice.wait();
         printConsoles(receipt, "PHNX");
     })
-    it('it should create Event', async function() {
+    xit('it should create Event', async function() {
         let result = await daoEventsV2.connect(maker).createEvent(createEventStruct);
         console.log("create event response");
 
@@ -305,7 +316,7 @@ const printConsoles = (receipt, name) => {
         console.log(Object.entries(desiredEvent).map(([key, value]) => `${key}: ${value}`)); 
         console.log('-----------');
     } )
-    it('it should purchase event ticket via USDC', async function() {
+    xit('it should purchase event ticket via USDC', async function() {
                                                         //implementation contract abi and proxyContract address
         const usdcTokenInstance = new ethers.Contract( mainnetAddresses.MATIC_CHAIN.USDC, maticUsdcAbi, taker); 
         await usdcTokenInstance.connect(taker).approve( mainnetAddresses.MATIC_CHAIN.DAO, "9999999999999999");

@@ -257,6 +257,12 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         goodTime(events[_buyTicket.eventId].time)
     {
 
+        if(!(token == address(0) && msg.value > 0))
+        {
+            if(token != address(0)) require(isWhiteListed(token), "EventsDao: token is not accepted");
+            //TO ADD -> check for !_event.token (free ticket) , check ticket price > 0
+            else require(msg.value > 0, "EventsDao: amount insufficient");  
+        }
         uint256 ticketCategoryIndex = _buyTicket.categoryIndex;
         uint256 _eventId = _buyTicket.eventId;
         uint256 msgAmount = msg.value;
@@ -316,7 +322,8 @@ contract DaoEventsV2 is IDaoEventsV2, Ownable, EventTicketV2, ReentrancyGuard {
         //payment is in other than PHNX and event is not free
         if(token != tokenAddress && _event.token) {
             uint percentToDeduct = 0;
-            uint8 decimals = IERC20(token).decimals();
+            // uint8 decimals = IERC20(token).decimals();
+            uint8 decimals = token != address(0) ? IERC20(token).decimals() : 18;  //check for eth payment
             //  uint256 twoPer = (2*10**decimals)/10**2;
             percentToDeduct = (_phnxPrice*((2*10**decimals)/10**2))/10**decimals;
             if(token == address(0) && msgAmount > 0) {
