@@ -23,3 +23,4 @@ event-dapp-contracts/
 - DaoEvents.sol: Manages event lifecycle and interactions within a decentralized organization (DAO) context.
 - EventTicket.sol: Facilitates ticket issuance, sales, and transfers.
 - StableToken.sol: Implements a stable ERC20 token used for event transactions.
+ 
